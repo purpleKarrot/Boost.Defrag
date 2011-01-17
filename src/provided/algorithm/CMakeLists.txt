@@ -1,0 +1,14 @@
+# Distributed under the Boost Software License, Version 1.0.
+# See http://www.boost.org/LICENSE_1_0.txt
+
+boost_project(algorithm
+  AUTHORS
+    "Pavol Droba <droba -at- topmail.sk>"
+    "Herve Bronnimann <hbr -at- poly.edu>"
+  DESCRIPTION
+    "A library of various algorithms."
+  DEPENDS
+    concept_check
+    range
+    regex
+  )
