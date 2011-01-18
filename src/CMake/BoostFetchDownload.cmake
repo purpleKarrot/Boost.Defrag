@@ -1,10 +1,10 @@
 
-function(boost_get_module_download name)
+function(boost_fetch_download name destination)
   cmake_parse_arguments(THIS "" "URL;MD5" "" ${ARGN})
 
-  set(module_dir ${BOOST_MODULES_DIR}/${name})
-  set(module_tgz ${Boost_BINARY_DIR}/downloads/${name}.tgz)
-  set(module_tmp ${Boost_BINARY_DIR}/${name}-tmp)
+  set(archive ${CMAKE_BINARY_DIR}/downloads/${name}.tgz)
+  set(tempdir ${CMAKE_BINARY_DIR}/${name}-tmp)
+  set(destdir ${destination}/${name})
 
   if(THIS_MD5)
     set(md5_args EXPECTED_MD5 ${THIS_MD5})
@@ -14,7 +14,7 @@ function(boost_get_module_download name)
 
   # Download file
   message(STATUS "${name}: downloading from: '${THIS_URL}'")
-  file(DOWNLOAD ${THIS_URL} ${module_tgz} SHOW_PROGRESS ${md5_args}
+  file(DOWNLOAD ${THIS_URL} ${archive} SHOW_PROGRESS ${md5_args}
     STATUS status)
 
   list(GET status 0 status_code)
@@ -25,28 +25,28 @@ function(boost_get_module_download name)
   endif()
 
   # Extract it
-  file(MAKE_DIRECTORY "${module_tmp}")
-  execute_process(COMMAND ${CMAKE_COMMAND} -E tar xfz ${module_tgz}
-    WORKING_DIRECTORY ${module_tmp}
+  file(MAKE_DIRECTORY "${tempdir}")
+  execute_process(COMMAND ${CMAKE_COMMAND} -E tar xfz ${archive}
+    WORKING_DIRECTORY ${tempdir}
     RESULT_VARIABLE rv)
 
   if(NOT rv EQUAL 0)
-    file(REMOVE_RECURSE "${module_tmp}")
-    message(FATAL_ERROR "error: extract of '${module_tgz}' failed")
+    file(REMOVE_RECURSE "${tempdir}")
+    message(FATAL_ERROR "error: extract of '${archive}' failed")
   endif()
 
   # Analyze what came out of the tar file
-  file(GLOB contents "${module_tmp}/*")
+  file(GLOB contents "${tempdir}/*")
   list(LENGTH contents n)
   if(NOT n EQUAL 1 OR NOT IS_DIRECTORY "${contents}")
-    set(contents "${module_tmp}")
+    set(contents "${tempdir}")
   endif()
 
   # Move "the one" directory to the final directory
-  file(REMOVE_RECURSE ${module_dir})
-  get_filename_component(contents ${contents} ABSOLUTE)
-  file(RENAME ${contents} ${module_dir})
+  file(REMOVE_RECURSE "${destdir}")
+  get_filename_component(contents "${contents}" ABSOLUTE)
+  file(RENAME "${contents}" "${destdir}")
 
   # Clean up
-  file(REMOVE_RECURSE "${module_tmp}")
-endfunction(boost_get_module_download)
+  file(REMOVE_RECURSE "${tempdir}")
+endfunction(boost_fetch_download)

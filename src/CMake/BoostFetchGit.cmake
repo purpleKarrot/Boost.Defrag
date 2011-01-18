@@ -1,23 +1,22 @@
 
 find_package(Git REQUIRED)
 
-function(boost_fetch_git name)
+function(boost_fetch_git name destination)
   cmake_parse_arguments(GIT "" "URL;TAG" "" ${ARGN})
-  set(module_dir "${BOOST_MODULES_DIR}/${name}")
 
-# # update
-# execute_process(
-#   COMMAND ${GIT_EXECUTABLE} fetch
-#   COMMAND ${GIT_EXECUTABLE} checkout ${GIT_URL}
-#   COMMAND ${GIT_EXECUTABLE} submodule update --recursive
-#   )
+#  if(EXISTS "${destination}/${name}/.git")
+#    execute_process(
+#      COMMAND ${GIT_EXECUTABLE} fetch
+#      COMMAND ${GIT_EXECUTABLE} checkout ${GIT_URL}
+#      COMMAND ${GIT_EXECUTABLE} submodule update --recursive
+#      )
+#  else()
 
-  file(REMOVE_RECURSE "${module_dir}")
-
+  file(REMOVE_RECURSE "${destination}/${name}")
   message(STATUS "${name}: cloning git repository: '${GIT_URL}'")
   execute_process(
     COMMAND "${git_EXECUTABLE}" clone "${GIT_URL}" "${name}"
-    WORKING_DIRECTORY "${BOOST_MODULES_DIR}"
+    WORKING_DIRECTORY "${destination}"
     RESULT_VARIABLE error_code
     )
   if(error_code)
@@ -28,7 +27,7 @@ function(boost_fetch_git name)
     COMMAND "${git_EXECUTABLE}" checkout "${GIT_TAG}"
     COMMAND "${git_EXECUTABLE}" submodule init
     COMMAND "${git_EXECUTABLE}" submodule update --recursive
-    WORKING_DIRECTORY "${module_dir}"
+    WORKING_DIRECTORY "${destination}/${name}"
     RESULT_VARIABLE error_code
     )
   if(error_code)

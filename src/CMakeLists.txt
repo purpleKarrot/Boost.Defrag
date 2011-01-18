@@ -57,15 +57,15 @@ file(MAKE_DIRECTORY "${BOOST_MODULES_DIR}")
 
 set(BOOST_MODULE_LIST)
 
-boost_get_module_download(docbook_xml
-  URL http://www.oasis-open.org/docbook/xml/4.2/docbook-xml-4.2.zip
-  MD5 73fe50dfe74ca631c1602f558ed8961f
-  )
+# boost_fetch_download(docbook_xml "${CMAKE_BINARY_DIR}/docbook_xml"
+#   URL http://www.oasis-open.org/docbook/xml/4.2/docbook-xml-4.2.zip
+#   MD5 73fe50dfe74ca631c1602f558ed8961f
+#   )
 
-boost_get_module_download(docbook_xsl
-  URL http://sourceforge.net/projects/docbook/files/docbook-xsl/1.75.2/docbook-xsl-1.75.2.tar.bz2/download
-  MD5 0c76a58a8e6cb5ab49f819e79917308f
-  )
+# boost_fetch_download(docbook_xsl "${CMAKE_BINARY_DIR}/docbook_xsl"
+#   URL http://sourceforge.net/projects/docbook/files/docbook-xsl/1.75.2/docbook-xsl-1.75.2.tar.bz2/download
+#   MD5 0c76a58a8e6cb5ab49f819e79917308f
+#   )
 
 file(GLOB_RECURSE modules "modules/*.cmake")
 foreach(module ${modules})
@@ -76,7 +76,6 @@ list(SORT BOOST_MODULE_LIST)
 set(BOOST_MODULE_ADD_SUBDIRECTORIES)
 
 foreach(module ${BOOST_MODULE_LIST})
-  set(module_dir "${BOOST_MODULES_DIR}/${module}")
   set(BOOST_MODULE_ADD_SUBDIRECTORIES
     "${BOOST_MODULE_ADD_SUBDIRECTORIES}\nadd_subdirectory(${module})")
 
@@ -84,19 +83,24 @@ foreach(module ${BOOST_MODULE_LIST})
   set(stable_source "${BOOST_${module}_STABLE}")
   list(GET stable_source 0 service)
   list(REMOVE_AT stable_source 0)
-  if(service MATCHES "DOWNLOAD")
-    boost_get_module_download(${module} ${stable_source})
-  elseif(service MATCHES "GIT")
-    boost_get_module_git(${module} ${stable_source})
-  elseif(service MATCHES "SVN")
-    boost_get_module_svn(${module} ${stable_source})
-  elseif(service MATCHES "COPY_FROM_BOOST_ROOT")
-    boost_get_module_boost_root(${module} ${stable_source})
+
+  # prepare arguments for boost_fetch_* functions
+  set(args ${module} ${BOOST_MODULES_DIR} ${stable_source})
+
+  if(service STREQUAL "DOWNLOAD")
+    boost_fetch_download(${args})
+  elseif(service STREQUAL "GIT")
+    boost_get_module_git(${args})
+  elseif(service STREQUAL "SVN")
+    boost_get_module_svn(${args})
+  elseif(service STREQUAL "COPY_FROM_BOOST_ROOT")
+    boost_fetch_monolithic(${args})
   else()
     message(FATAL_ERROR "no service for ${name} given!")
   endif()
 
   # create forwarding headers
+  set(module_dir "${BOOST_MODULES_DIR}/${module}")
   file(GLOB_RECURSE module_headers "${module_dir}/boost/*")
   foreach(header ${module_headers})
     file(RELATIVE_PATH relative ${module_dir} ${header})
@@ -119,6 +123,6 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt.in
   ${BOOST_MODULES_DIR}/CMakeLists.txt @ONLY)
 
 add_subdirectory(
-  ${Boost_BINARY_DIR}/${branch}-source
+  ${Boost_BINARY_DIR}/${branch}-source/src
   ${Boost_BINARY_DIR}/${branch}-binary
   )
