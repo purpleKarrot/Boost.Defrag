@@ -1,7 +1,7 @@
 # Distributed under the Boost Software License, Version 1.0.
 # See http://www.boost.org/LICENSE_1_0.txt
 
-boost_project(QuickBook
+boost_project(quickbook
   AUTHORS
     "Joel de Guzman <joel -at- boost-consulting.com>"
     "Eric Niebler <eric -at- boost-consulting.com>"

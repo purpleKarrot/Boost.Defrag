@@ -27,7 +27,10 @@ set(CPACK_SOURCE_INSTALLED_DIRECTORIES
   )
 
 if(NOT BOOST_UPDATE_SOURCE)
-  add_subdirectory(${BOOST_MODULES_DIR} ${Boost_BINARY_DIR}/build)
+  add_subdirectory(
+    ${Boost_BINARY_DIR}/${branch}-source/src
+    ${Boost_BINARY_DIR}/${branch}-binary
+    )
   return()
 endif()
 

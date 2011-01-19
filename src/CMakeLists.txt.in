@@ -14,6 +14,8 @@ include(CheckCXXSourceCompiles)
 find_package(Threads)
 # LINK_LIBRARIES ${CMAKE_THREAD_LIBS_INIT}
 
+# make visual studio look nice
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 if(MSVC)
   add_definitions(
@@ -89,6 +91,8 @@ if (NOT BOOST_TOOLSET)
     set(BOOST_TOOLSET "vc80")
   elseif(MSVC90)
     set(BOOST_TOOLSET "vc90")
+  elseif(MSVC100)
+    set(BOOST_TOOLSET "vc100")
   elseif(MSVC)
     set(BOOST_TOOLSET "vc")
   elseif(BORLAND)
