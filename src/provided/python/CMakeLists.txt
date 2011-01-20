@@ -21,39 +21,57 @@ endif()
 
 include_directories(${PYTHON_INCLUDE_DIRS})
 
-
-boost_add_library(python
-  SOURCES
-    src/numeric.cpp
-    src/list.cpp
-    src/long.cpp
-    src/dict.cpp
-    src/tuple.cpp
-    src/str.cpp
-    src/slice.cpp
-    src/converter/from_python.cpp
-    src/converter/registry.cpp
-    src/converter/type_id.cpp
-    src/object/enum.cpp
-    src/object/class.cpp
-    src/object/function.cpp
-    src/object/inheritance.cpp
-    src/object/life_support.cpp
-    src/object/pickle_support.cpp
-    src/errors.cpp
-    src/module.cpp
-    src/converter/builtin_converters.cpp
-    src/converter/arg_to_python_base.cpp
-    src/object/iterator.cpp
-    src/object/stl_iterator.cpp
-    src/object_protocol.cpp
-    src/object_operators.cpp
-    src/wrapper.cpp
-    src/import.cpp
-    src/exec.cpp
-    src/object/function_doc_signature.cpp
-#  STATIC_DEFINITION
-#    "BOOST_PYTHON_STATIC_LIB=1"
-  LINK_LIBRARIES
-    ${PYTHON_LIBRARIES}
+set(sources
+  src/numeric.cpp
+  src/list.cpp
+  src/long.cpp
+  src/dict.cpp
+  src/tuple.cpp
+  src/str.cpp
+  src/slice.cpp
+  src/converter/from_python.cpp
+  src/converter/registry.cpp
+  src/converter/type_id.cpp
+  src/object/enum.cpp
+  src/object/class.cpp
+  src/object/function.cpp
+  src/object/inheritance.cpp
+  src/object/life_support.cpp
+  src/object/pickle_support.cpp
+  src/errors.cpp
+  src/module.cpp
+  src/converter/builtin_converters.cpp
+  src/converter/arg_to_python_base.cpp
+  src/object/iterator.cpp
+  src/object/stl_iterator.cpp
+  src/object_protocol.cpp
+  src/object_operators.cpp
+  src/wrapper.cpp
+  src/import.cpp
+  src/exec.cpp
+  src/object/function_doc_signature.cpp
   )
+
+set(sources_string "")
+foreach(file ${sources})
+  set(sources_string "${sources_string}\n  ${CMAKE_CURRENT_SOURCE_DIR}/${file}")
+endforeach(file)
+
+set(shared_lib_dir ${CMAKE_CURRENT_BINARY_DIR}/shared_lib)
+file(WRITE ${shared_lib_dir}/CMakeLists.txt
+  "boost_add_library(python SHARED\n"
+  "  SOURCES ${sources_string}\n"
+  "  LINK_LIBRARIES ${PYTHON_LIBRARIES}\n"
+  "  )\n"
+  )
+add_subdirectory(${shared_lib_dir} ${shared_lib_dir}-build)
+
+set(static_lib_dir ${CMAKE_CURRENT_BINARY_DIR}/static_lib)
+file(WRITE ${static_lib_dir}/CMakeLists.txt
+  "add_definitions(-DBOOST_PYTHON_STATIC_LIB=1)\n"
+  "boost_add_library(python STATIC\n"
+  "  SOURCES ${sources_string}\n"
+  "  LINK_LIBRARIES ${PYTHON_LIBRARIES}\n"
+  "  )\n"
+  )
+add_subdirectory(${static_lib_dir} ${static_lib_dir}-build)

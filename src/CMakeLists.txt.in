@@ -91,8 +91,8 @@ if (NOT BOOST_TOOLSET)
     set(BOOST_TOOLSET "vc80")
   elseif(MSVC90)
     set(BOOST_TOOLSET "vc90")
-  elseif(MSVC100)
-    set(BOOST_TOOLSET "vc100")
+  elseif(MSVC10)
+    set(BOOST_TOOLSET "vc10")
   elseif(MSVC)
     set(BOOST_TOOLSET "vc")
   elseif(BORLAND)
@@ -128,16 +128,16 @@ endif (NOT BOOST_TOOLSET)
 
 
 # Limit CMAKE_CONFIGURATION_TYPES to Debug and Release
-set(config_types "Debug;Release")
+#set(config_types "Debug;Release")
 
-if(MSVC)
-  string(REPLACE "/MD" "/MT" CMAKE_C_FLAGS_DEBUGSTATICRUNTIME "${CMAKE_C_FLAGS_DEBUG}") 
-  string(REPLACE "/MD" "/MT" CMAKE_CXX_FLAGS_DEBUGSTATICRUNTIME "${CMAKE_CXX_FLAGS_DEBUG}") 
-  string(REPLACE "/MD" "/MT" CMAKE_C_FLAGS_RELEASESTATICRUNTIME "${CMAKE_C_FLAGS_RELEASE}") 
-  string(REPLACE "/MD" "/MT" CMAKE_CXX_FLAGS_RELEASESTATICRUNTIME "${CMAKE_CXX_FLAGS_RELEASE}")
-
-  list(APPEND config_types DebugStaticRuntime ReleaseStaticRuntime)
-endif(MSVC)
+#if(MSVC)
+#  string(REPLACE "/MD" "/MT" CMAKE_C_FLAGS_DEBUGSTATICRUNTIME "${CMAKE_C_FLAGS_DEBUG}") 
+#  string(REPLACE "/MD" "/MT" CMAKE_CXX_FLAGS_DEBUGSTATICRUNTIME "${CMAKE_CXX_FLAGS_DEBUG}") 
+#  string(REPLACE "/MD" "/MT" CMAKE_C_FLAGS_RELEASESTATICRUNTIME "${CMAKE_C_FLAGS_RELEASE}") 
+#  string(REPLACE "/MD" "/MT" CMAKE_CXX_FLAGS_RELEASESTATICRUNTIME "${CMAKE_CXX_FLAGS_RELEASE}")
+#
+#  list(APPEND config_types DebugStaticRuntime ReleaseStaticRuntime)
+#endif(MSVC)
 
 # The way to identify whether a generator is multi-configuration is to
 # check whether CMAKE_CONFIGURATION_TYPES is set.  The VS/XCode generators
@@ -147,8 +147,8 @@ endif(MSVC)
 
 # Tweak the configuration and build types appropriately.
 if(CMAKE_CONFIGURATION_TYPES)
-  set(CMAKE_CONFIGURATION_TYPES "${config_types}" CACHE STRING
-    "Semicolon-separate list of supported configuration types" FORCE)
+#  set(CMAKE_CONFIGURATION_TYPES "${config_types}" CACHE STRING
+#    "Semicolon-separate list of supported configuration types" FORCE)
 else(CMAKE_CONFIGURATION_TYPES)
   # Build in release mode by default
   if (NOT CMAKE_BUILD_TYPE)
