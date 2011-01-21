@@ -1,7 +1,7 @@
 # Distributed under the Boost Software License, Version 1.0.
 # See http://www.boost.org/LICENSE_1_0.txt
 
-boost_project(iterator
+boost_project(Iterator
   AUTHORS
     "David Abrahams <dave -at- boostpro.com>"
     "Jeremy Siek <jeremy.siek -at- gmail.com>"
@@ -16,3 +16,6 @@ boost_project(iterator
     function
     concept_check
   )
+
+file(GLOB_RECURSE headers ${CMAKE_CURRENT_SOURCE_DIR}/boost/*.?pp)
+boost_add_headers("" ${headers})

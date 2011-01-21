@@ -1,7 +1,7 @@
 # Distributed under the Boost Software License, Version 1.0.
 # See http://www.boost.org/LICENSE_1_0.txt
 
-boost_project(dynamic_bitset
+boost_project(Dynamic_bitset
   AUTHORS
     "Jeremy Siek <jeremy.siek -at- gmail.com>"
     "Chuck Allison"
@@ -11,3 +11,6 @@ boost_project(dynamic_bitset
     detail
     static_assert
   )
+
+file(GLOB_RECURSE headers ${CMAKE_CURRENT_SOURCE_DIR}/boost/*.?pp)
+boost_add_headers("" ${headers})

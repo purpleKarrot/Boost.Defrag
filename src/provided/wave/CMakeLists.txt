@@ -1,7 +1,7 @@
 # Distributed under the Boost Software License, Version 1.0.
 # See http://www.boost.org/LICENSE_1_0.txt
 
-boost_project(wave
+boost_project(Wave
   AUTHORS
     "Hartmut Kaiser <hartmut.kaiser -at- gmail.com>"
   DESCRIPTION
@@ -14,6 +14,9 @@ boost_project(wave
     thread
     intrusive
   )
+
+file(GLOB_RECURSE headers ${CMAKE_CURRENT_SOURCE_DIR}/boost/*.?pp)
+boost_add_headers("" ${headers})
 
 add_definitions(-DBOOST_ALL_DYN_LINK=1)
 

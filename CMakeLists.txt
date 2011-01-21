@@ -26,11 +26,6 @@ endif(BOOST_VERSION_PATCH GREATER 0)
 
 enable_testing()
 
-# TODO: do not include them here
-include(BoostDocs)
-include(BoostProject)
-include(BoostTesting)
-
 # clear list of components
 set(CPACK_COMPONENTS_ALL)
 

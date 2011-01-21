@@ -101,20 +101,6 @@ foreach(module ${BOOST_MODULE_LIST})
   else()
     message(FATAL_ERROR "no service for ${name} given!")
   endif()
-
-  # create forwarding headers
-  set(module_dir "${BOOST_MODULES_DIR}/${module}")
-  file(GLOB_RECURSE module_headers "${module_dir}/boost/*")
-  foreach(header ${module_headers})
-    file(RELATIVE_PATH relative ${module_dir} ${header})
-    set(fwdfile "${BOOST_INCLUDE_DIR}/${relative}")
-    if(NOT EXISTS ${fwdfile})
-      get_filename_component(path ${relative} PATH)
-      get_filename_component(fwd_absolute "${BOOST_INCLUDE_DIR}/${path}" ABSOLUTE)
-      file(RELATIVE_PATH include "${fwd_absolute}" ${header})
-      file(WRITE ${fwdfile} "#include \"${include}\"\n")
-    endif()
-  endforeach(header)
 endforeach(module)
 
 # TODO: remove this once all modules provide their own CMakeLists.txt file

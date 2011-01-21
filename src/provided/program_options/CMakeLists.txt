@@ -1,7 +1,7 @@
 # Distributed under the Boost Software License, Version 1.0.
 # See http://www.boost.org/LICENSE_1_0.txt
 
-boost_project(program_options
+boost_project(Program_options
   AUTHORS
     "Vladimir Prus <ghost -at- cs.msu.su>"
   DESCRIPTION
@@ -13,6 +13,9 @@ boost_project(program_options
     test
     tokenizer
   )
+
+file(GLOB_RECURSE headers ${CMAKE_CURRENT_SOURCE_DIR}/boost/*.?pp)
+boost_add_headers("" ${headers})
 
 boost_add_library(program_options
   SOURCES

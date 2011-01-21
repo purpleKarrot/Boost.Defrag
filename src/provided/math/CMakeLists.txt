@@ -1,11 +1,14 @@
 # Distributed under the Boost Software License, Version 1.0.
 # See http://www.boost.org/LICENSE_1_0.txt
 
-boost_project(math
+boost_project(Math
   DEPENDS
     format
     array
   )
+
+file(GLOB_RECURSE headers ${CMAKE_CURRENT_SOURCE_DIR}/boost/*.?pp)
+boost_add_headers("" ${headers})
 
 # TODO: precompile src/tr1/pch.hpp
 include_directories(src/tr1)

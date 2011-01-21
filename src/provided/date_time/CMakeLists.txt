@@ -1,7 +1,7 @@
 # Distributed under the Boost Software License, Version 1.0.
 # See http://www.boost.org/LICENSE_1_0.txt
 
-boost_project(date_time
+boost_project(Date_time
   AUTHORS
     "Jeff Garland <jeff -at- crystalclearsoftware.com>"
   DESCRIPTION
@@ -14,6 +14,9 @@ boost_project(date_time
     smart_ptr
     tokenizer
   )
+
+file(GLOB_RECURSE headers ${CMAKE_CURRENT_SOURCE_DIR}/boost/*.?pp)
+boost_add_headers("" ${headers})
 
 add_definitions(-DDATE_TIME_INLINE)
 

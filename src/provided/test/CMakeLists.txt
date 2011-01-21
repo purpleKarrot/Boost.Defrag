@@ -1,7 +1,7 @@
 # Distributed under the Boost Software License, Version 1.0.
 # See http://www.boost.org/LICENSE_1_0.txt
 
-boost_project(test
+boost_project(Test
   AUTHORS
     "Gennadiy Rozental <gennadiy.rozental -at- gmail.com>"
   DESCRIPTION
@@ -13,6 +13,9 @@ boost_project(test
     bind
     numeric
   )
+
+file(GLOB_RECURSE headers ${CMAKE_CURRENT_SOURCE_DIR}/boost/*.?pp)
+boost_add_headers("" ${headers})
 
 if(MSVC)
   add_definitions(/EHa) # specify the asynchronous exception handling model

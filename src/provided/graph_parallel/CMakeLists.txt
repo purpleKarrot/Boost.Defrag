@@ -1,7 +1,7 @@
 # Distributed under the Boost Software License, Version 1.0.
 # See http://www.boost.org/LICENSE_1_0.txt
 
-boost_project(graph_parallel
+boost_project(Graph_parallel
   AUTHORS
     "Douglas Gregor <doug.gregor -at- gmail.com>"
     "Nicholas Edmonds <ngedmond -at- osl.iu.edu>"
@@ -13,6 +13,9 @@ boost_project(graph_parallel
     mpi
     graph
   )
+
+file(GLOB_RECURSE headers ${CMAKE_CURRENT_SOURCE_DIR}/boost/*.?pp)
+boost_add_headers("" ${headers})
 
 find_package(MPI)
 if(NOT MPI_FOUND)

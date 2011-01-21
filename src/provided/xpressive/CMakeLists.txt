@@ -1,7 +1,7 @@
 # Distributed under the Boost Software License, Version 1.0.
 # See http://www.boost.org/LICENSE_1_0.txt
 
-boost_project(xpressive
+boost_project(Xpressive
   AUTHORS
     "Eric Niebler <eric -at- boost-consulting.com>"
   DESCRIPTION
@@ -14,3 +14,6 @@ boost_project(xpressive
     intrusive
     numeric
   )
+
+file(GLOB_RECURSE headers ${CMAKE_CURRENT_SOURCE_DIR}/boost/*.?pp)
+boost_add_headers("" ${headers})

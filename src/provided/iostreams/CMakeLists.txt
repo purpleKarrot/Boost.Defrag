@@ -1,7 +1,7 @@
 # Distributed under the Boost Software License, Version 1.0.
 # See http://www.boost.org/LICENSE_1_0.txt
 
-boost_project(iostreams
+boost_project(Iostreams
   AUTHORS
     "Jonathan Turkanis <turkanis -at- coderage.com>"
   DESCRIPTION
@@ -10,6 +10,9 @@ boost_project(iostreams
     range
     random
   )
+
+file(GLOB_RECURSE headers ${CMAKE_CURRENT_SOURCE_DIR}/boost/*.?pp)
+boost_add_headers("" ${headers})
 
 set(sources src/file_descriptor.cpp src/mapped_file.cpp)
 set(link_libraries)
