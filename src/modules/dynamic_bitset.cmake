@@ -2,7 +2,7 @@
 # See http://www.boost.org/LICENSE_1_0.txt
 
 boost_module(dynamic_bitset
-  COPY_FROM_BOOST_ROOT
+  COPY_FROM_PRISTINE_BOOST
     boost/dynamic_bitset
     boost/dynamic_bitset.hpp
     boost/dynamic_bitset_fwd.hpp

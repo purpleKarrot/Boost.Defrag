@@ -2,7 +2,7 @@
 # See http://www.boost.org/LICENSE_1_0.txt
 
 boost_module(integer
-  COPY_FROM_BOOST_ROOT
+  COPY_FROM_PRISTINE_BOOST
     boost/integer
     boost/integer.hpp
     boost/integer_fwd.hpp

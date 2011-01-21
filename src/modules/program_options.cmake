@@ -2,7 +2,7 @@
 # See http://www.boost.org/LICENSE_1_0.txt
 
 boost_module(program_options
-  COPY_FROM_BOOST_ROOT
+  COPY_FROM_PRISTINE_BOOST
     boost/program_options
     boost/program_options.hpp
   )

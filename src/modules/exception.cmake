@@ -2,7 +2,7 @@
 # See http://www.boost.org/LICENSE_1_0.txt
 
 boost_module(exception
-  COPY_FROM_BOOST_ROOT
+  COPY_FROM_PRISTINE_BOOST
     boost/exception
     boost/exception.hpp
     boost/exception_ptr.hpp

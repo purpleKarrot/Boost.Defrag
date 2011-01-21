@@ -2,7 +2,7 @@
 # See http://www.boost.org/LICENSE_1_0.txt
 
 boost_module(concept_check
-  COPY_FROM_BOOST_ROOT
+  COPY_FROM_PRISTINE_BOOST
     boost/concept
     boost/concept_check
     boost/concept_check.hpp

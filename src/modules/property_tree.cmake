@@ -3,6 +3,6 @@
 
 boost_module(property_tree
 # DEPENDS
-  COPY_FROM_BOOST_ROOT
+  COPY_FROM_PRISTINE_BOOST
     boost/property_tree
   )
