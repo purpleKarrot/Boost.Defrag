@@ -1,7 +1,7 @@
 # Distributed under the Boost Software License, Version 1.0.
 # See http://www.boost.org/LICENSE_1_0.txt
 
-boost_project(signals2
+boost_project(Signals2
   AUTHORS
     "Frank Mori Hess <fmhess -at- users.sourceforge.net>"
   DESCRIPTION
@@ -9,7 +9,7 @@ boost_project(signals2
     "Signals represent callbacks with multiple targets, and are also called publishers or"
     "events in similar systems. Signals are connected to some set of slots, which are"
     "callback receivers (also called event targets or subscribers), which are called"
-    "when the signal is \"emitted.\""
+    "when the signal is 'emitted'."
   DEPENDS
     thread
   )

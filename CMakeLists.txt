@@ -31,8 +31,13 @@ include(BoostDocs)
 include(BoostProject)
 include(BoostTesting)
 
+# clear list of components
+set(CPACK_COMPONENTS_ALL)
+
 # TODO?: create multiple build dirs with different configs when using makefiles
 add_subdirectory(src)
+
+list(REMOVE_DUPLICATES CPACK_COMPONENTS_ALL)
 
 ##########################################################################
 # Packages                                                               #
