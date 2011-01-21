@@ -5,7 +5,7 @@ include(BoostProject)
 include(BoostDocs)
 include(BoostTesting)
 
-boost_project(assign
+boost_project(Assign
   AUTHORS
     "Thorsten Ottosen <nesotto -at- cs.auc.dk>"
   DESCRIPTION

@@ -43,7 +43,7 @@ boost_add_library(wave
     date_time
   )
 
-boost_add_executable(wave_tool
+boost_add_executable(wave
   SOURCES
     tools/wave/cpp.cpp
   LINK_BOOST_LIBRARIES
