@@ -48,26 +48,28 @@ endforeach(DEP)
 file(APPEND ${debian_control} "cmake\n"
   "Standards-Version: 3.9.1\n"
   "Homepage: ${CPACK_PACKAGE_VENDOR}\n"
-  "\n"
-  "Package: ${CPACK_DEBIAN_PACKAGE_NAME}\n"
-  "Architecture: any\n"
-  "Depends: ${CPACK_DEBIAN_PACKAGE_DEPENDS}\n"
-  "Description: ${CPACK_PACKAGE_DESCRIPTION_SUMMARY}\n"
-  "${DEB_LONG_DESCRIPTION}"
+# "\n"
+# "Package: ${CPACK_DEBIAN_PACKAGE_NAME}\n"
+# "Architecture: any\n"
+# "Depends: ${CPACK_DEBIAN_PACKAGE_DEPENDS}\n"
+# "Description: ${CPACK_PACKAGE_DESCRIPTION_SUMMARY}\n"
+# "${DEB_LONG_DESCRIPTION}"
   )
 
-foreach(COMPONENT ${CPACK_COMPONENTS_ALL})
-  string(TOUPPER ${COMPONENT} UPPER_COMPONENT)
-  file(APPEND ${debian_control} "\n"
-    "Package: ${CPACK_DEBIAN_PACKAGE_NAME}-${COMPONENT}\n"
+foreach(component ${CPACK_COMPONENTS_ALL})
+  string(REPLACE "_" "-" component_name "${component}")
+  get_cpack_component(display_name "${component}_DISPLAY_NAME")
+  get_cpack_component(description "${component}_DESCRIPTION")
+  file(APPEND ${debian_control}
+    "\n"
+    "Package: ${CPACK_DEBIAN_PACKAGE_NAME}-${component_name}\n"
     "Architecture: any\n"
-    "Description: ${CPACK_PACKAGE_DESCRIPTION_SUMMARY}"
-    ": ${CPACK_COMPONENT_${UPPER_COMPONENT}_DISPLAY_NAME}\n"
+    "Description: ${CPACK_PACKAGE_DESCRIPTION_SUMMARY}: ${display_name}\n"
     "${DEB_LONG_DESCRIPTION}"
     " .\n"
-    " ${CPACK_COMPONENT_${UPPER_COMPONENT}_DESCRIPTION}\n"
+    " ${description}\n"
     )
-endforeach(COMPONENT)
+endforeach(component)
 
 ################################################################################
 # debian/copyright
@@ -85,7 +87,7 @@ file(WRITE ${debian_rules}
   "BUILDDIR = build_dir\n"
   "\n"
   "build:\n"
-  "	mkdir $(BUILDDIR)\n"
+  "	cmake -E make_directory $(BUILDDIR)\n"
   "	cd $(BUILDDIR); cmake ..\n"
   "	make -C $(BUILDDIR) preinstall\n"
   "	touch build\n"
@@ -95,22 +97,23 @@ file(WRITE ${debian_rules}
   "binary-indep: build\n"
   "\n"
   "binary-arch: build\n"
-  "	cd $(BUILDDIR); cmake -DCOMPONENT=Unspecified -DCMAKE_INSTALL_PREFIX=../debian/tmp/usr -P cmake_install.cmake\n"
-  "	mkdir debian/tmp/DEBIAN\n"
-  "	dpkg-gencontrol -p${CPACK_DEBIAN_PACKAGE_NAME}\n"
-  "	dpkg --build debian/tmp ..\n"
+# "	cd $(BUILDDIR); cmake -DCOMPONENT=Unspecified -DCMAKE_INSTALL_PREFIX=../debian/tmp/usr -P cmake_install.cmake\n"
+# "	cmake -E make_directory debian/tmp/DEBIAN\n"
+# "	dpkg-gencontrol -p${CPACK_DEBIAN_PACKAGE_NAME}\n"
+# "	dpkg --build debian/tmp ..\n"
   )
 
-foreach(COMPONENT ${CPACK_COMPONENTS_ALL})
-  set(PATH debian/tmp_${COMPONENT})
-  set(PACKAGE ${CPACK_DEBIAN_PACKAGE_NAME}-${COMPONENT})
+foreach(component ${CPACK_COMPONENTS_ALL})
+  string(REPLACE "_" "-" component_name "${component}")
+  set(package ${CPACK_DEBIAN_PACKAGE_NAME}-${component_name})
+  set(path debian/${component})
   file(APPEND ${debian_rules}
-    "	cd $(BUILDDIR); cmake -DCOMPONENT=${COMPONENT} -DCMAKE_INSTALL_PREFIX=../${PATH}/usr -P cmake_install.cmake\n"
-    "	mkdir ${PATH}/DEBIAN\n"
-    "	dpkg-gencontrol -p${PACKAGE} -P${PATH}\n"
-    "	dpkg --build ${PATH} ..\n"
+    "	cd $(BUILDDIR); cmake -DCOMPONENT=${component} -DCMAKE_INSTALL_PREFIX=../${path}/usr -P cmake_install.cmake\n"
+    "	cmake -E make_directory ${path}/DEBIAN\n"
+    "	dpkg-gencontrol -p${package} -P${path}\n"
+    "	dpkg --build ${path} ..\n"
     )
-endforeach(COMPONENT)
+endforeach(component)
 
 file(APPEND ${debian_rules}
   "\n"

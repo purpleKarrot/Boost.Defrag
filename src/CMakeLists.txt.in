@@ -209,7 +209,7 @@ include_directories(../include)
 #set(CMAKE_SHARED_LIBRARY_PREFIX libboost_)
 #set(CMAKE_STATIC_LIBRARY_PREFIX libboost_)
 
-set(CPACK_COMPONENTS_ALL)
+unset(CPACK_COMPONENTS_ALL CACHE)
 
 ##########################################################################
 @BOOST_MODULE_ADD_SUBDIRECTORIES@

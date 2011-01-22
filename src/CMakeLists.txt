@@ -54,6 +54,12 @@ file(COPY
   DESTINATION ${BOOST_MONOLITHIC_ROOT}
   )
 
+file(COPY
+  ${Boost_SOURCE_DIR}/src/boost.ico
+  ${Boost_SOURCE_DIR}/src/exe.rc
+  DESTINATION ${BOOST_MONOLITHIC_ROOT}/src
+  )
+
 file(MAKE_DIRECTORY "${BOOST_MODULES_DIR}")
 
 set(BOOST_MODULE_LIST)
