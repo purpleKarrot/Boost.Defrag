@@ -1,10 +1,12 @@
-# Copyright (C) 2007, 2008 Douglas Gregor <doug.gregor@gmail.com>
-# Copyright (C) 2007, 2009 Troy Straszheim <troy@resophonic.com>
-# Copyright (C) 2010, 2011 Daniel Pfeifer <daniel@pfeifer-mail.de>
-#
-# Distributed under the Boost Software License, Version 1.0.
-# See accompanying file LICENSE_1_0.txt or copy at
-#   http://www.boost.org/LICENSE_1_0.txt
+##########################################################################
+# Copyright (C) 2007-2008 Douglas Gregor <doug.gregor@gmail.com>         #
+# Copyright (C) 2007-2009 Troy Straszheim <troy@resophonic.com>          #
+# Copyright (C) 2010-2011 Daniel Pfeifer <daniel@pfeifer-mail.de>        #
+#                                                                        #
+# Distributed under the Boost Software License, Version 1.0.             #
+# See accompanying file LICENSE_1_0.txt or copy at                       #
+#   http://www.boost.org/LICENSE_1_0.txt                                 #
+##########################################################################
 
 cmake_minimum_required(VERSION 2.8.3 FATAL_ERROR)
 project(Boost)
@@ -12,7 +14,10 @@ project(Boost)
 # Boost CMake modules
 list(APPEND CMAKE_MODULE_PATH ${Boost_SOURCE_DIR}/CMake)
 
-# Version information
+##########################################################################
+# Version and Package Information                                        #
+##########################################################################
+
 set(BOOST_VERSION_MAJOR 1)
 set(BOOST_VERSION_MINOR 45)
 set(BOOST_VERSION_PATCH 0)
@@ -22,24 +27,7 @@ if(BOOST_VERSION_PATCH GREATER 0)
   set(BOOST_VERSION "${BOOST_VERSION}.${BOOST_VERSION_PATCH}")
 endif(BOOST_VERSION_PATCH GREATER 0)
 
-##########################################################################
-
-enable_testing()
-
-# clear list of components
-set(CPACK_COMPONENTS_ALL)
-
-# TODO?: create multiple build dirs with different configs when using makefiles
-add_subdirectory(src)
-
-list(REMOVE_DUPLICATES CPACK_COMPONENTS_ALL)
-
-##########################################################################
-# Packages                                                               #
-##########################################################################
-#
-#  CPACK_PACKAGE_NAME may not contain spaces when generating rpms
-#
+# CPACK_PACKAGE_NAME may not contain spaces when generating rpms
 set(CPACK_PACKAGE_NAME "Boost")
 set(CPACK_PACKAGE_VENDOR "Boost.org")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Boost ${BOOST_VERSION} prerelease")
@@ -96,8 +84,18 @@ elseif (BORLAND)
   set(CPACK_NSIS_DISPLAY_NAME "${CPACK_NSIS_DISPLAY_NAME} for Borland C++ Builder")    
 endif ()
 
-set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "${CPACK_NSIS_DISPLAY_NAME}")
+##########################################################################
+# Building and Testing                                                   #
+##########################################################################
+
+enable_testing()
+
+# TODO?: create multiple build dirs with different configs when using makefiles
+add_subdirectory(src)
+
+##########################################################################
+# Packaging                                                              #
+##########################################################################
 
 include(CPack)
-
 #cpack_configure_downloads("http://www.purplekarrot.net/boost/${BOOST_VERSION}/" ALL ADD_REMOVE)

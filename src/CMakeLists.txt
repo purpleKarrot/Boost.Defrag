@@ -34,8 +34,6 @@ if(NOT BOOST_UPDATE_SOURCE)
   return()
 endif()
 
-set(BOOST_UPDATE_SOURCE OFF CACHE BOOL "update source" FORCE)
-
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/CMake)
 
 include(BoostModule)
@@ -115,3 +113,9 @@ add_subdirectory(
   ${Boost_BINARY_DIR}/${branch}-source/src
   ${Boost_BINARY_DIR}/${branch}-binary
   )
+
+if(NOT WIN32)
+  include(BoostDebian)
+endif(NOT WIN32)
+
+set(BOOST_UPDATE_SOURCE OFF CACHE BOOL "update source" FORCE)
