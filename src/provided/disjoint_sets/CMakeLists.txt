@@ -1,7 +1,7 @@
 # Distributed under the Boost Software License, Version 1.0.
 # See http://www.boost.org/LICENSE_1_0.txt
 
-boost_project(Disjoint_sets
+boost_project("Disjoint Sets"
   AUTHORS
     "Jeremy Siek <jeremy.siek -at- gmail.com>"
     "Lie-Quan Lee"

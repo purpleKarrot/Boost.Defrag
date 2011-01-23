@@ -57,12 +57,12 @@ file(APPEND ${debian_control} "cmake\n"
   )
 
 foreach(component ${CPACK_COMPONENTS_ALL})
-  string(REPLACE "_" "-" component_name "${component}")
+  get_cpack_component(deb_package "${component}_DEB_PACKAGE")
   get_cpack_component(display_name "${component}_DISPLAY_NAME")
   get_cpack_component(description "${component}_DESCRIPTION")
   file(APPEND ${debian_control}
     "\n"
-    "Package: ${CPACK_DEBIAN_PACKAGE_NAME}-${component_name}\n"
+    "Package: ${deb_package}\n"
     "Architecture: any\n"
     "Description: ${CPACK_PACKAGE_DESCRIPTION_SUMMARY}: ${display_name}\n"
     "${DEB_LONG_DESCRIPTION}"
@@ -104,13 +104,12 @@ file(WRITE ${debian_rules}
   )
 
 foreach(component ${CPACK_COMPONENTS_ALL})
-  string(REPLACE "_" "-" component_name "${component}")
-  set(package ${CPACK_DEBIAN_PACKAGE_NAME}-${component_name})
+  get_cpack_component(deb_package "${component}_DEB_PACKAGE")
   set(path debian/${component})
   file(APPEND ${debian_rules}
     "	cd $(BUILDDIR); cmake -DCOMPONENT=${component} -DCMAKE_INSTALL_PREFIX=../${path}/usr -P cmake_install.cmake\n"
     "	cmake -E make_directory ${path}/DEBIAN\n"
-    "	dpkg-gencontrol -p${package} -P${path}\n"
+    "	dpkg-gencontrol -p${deb_package} -P${path}\n"
     "	dpkg --build ${path} ..\n"
     )
 endforeach(component)
@@ -141,5 +140,5 @@ execute_process(COMMAND date -R  OUTPUT_VARIABLE DATE_TIME)
 file(WRITE ${debian_changelog}
   "${CPACK_DEBIAN_PACKAGE_NAME} (${BOOST_VERSION}) maverick; urgency=low\n\n"
   "  * Package built with CMake\n\n"
-  " -- Daniel Pfeifer <daniel@pfeifer-mail.de>  ${DATE_TIME}"
+  " -- ${CPACK_PACKAGE_CONTACT}  ${DATE_TIME}"
   )

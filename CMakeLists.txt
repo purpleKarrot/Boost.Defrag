@@ -29,7 +29,8 @@ endif(BOOST_VERSION_PATCH GREATER 0)
 
 # CPACK_PACKAGE_NAME may not contain spaces when generating rpms
 set(CPACK_PACKAGE_NAME "Boost")
-set(CPACK_PACKAGE_VENDOR "Boost.org")
+set(CPACK_PACKAGE_VENDOR "http://www.boost.org")
+set(CPACK_PACKAGE_CONTACT "Daniel Pfeifer <daniel@pfeifer-mail.de>")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Boost ${BOOST_VERSION} prerelease")
 set(CPACK_PACKAGE_FILE_NAME "boost-${BOOST_VERSION}-${BOOST_PLATFORM}-${BOOST_TOOLSET}")
 
