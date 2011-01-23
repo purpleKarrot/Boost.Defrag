@@ -91,6 +91,8 @@ foreach(module ${BOOST_MODULE_LIST})
   list(GET stable_source 0 service)
   list(REMOVE_AT stable_source 0)
 
+  message(STATUS "fetching '${module}' via ${service}.")
+
   # prepare arguments for boost_fetch_* functions
   set(args ${module} ${BOOST_MODULES_DIR} ${stable_source})
 
