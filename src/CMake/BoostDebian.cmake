@@ -10,7 +10,7 @@
 # debian policy enforce lower case for package name
 # Package: (mandatory)
 IF(NOT CPACK_DEBIAN_PACKAGE_NAME)
-  STRING(TOLOWER "${CPACK_PACKAGE_NAME}" CPACK_DEBIAN_PACKAGE_NAME)
+  STRING(TOLOWER "${CPACK_PACKAGE_NAME}${BOOST_VERSION}" CPACK_DEBIAN_PACKAGE_NAME)
 ENDIF(NOT CPACK_DEBIAN_PACKAGE_NAME)
 
 # Section: (recommended)
@@ -33,19 +33,16 @@ set(debian_dir ${BOOST_MONOLITHIC_ROOT}/debian)
 ################################################################################
 # debian/control
 set(debian_control ${debian_dir}/control)
+list(APPEND CPACK_DEBIAN_BUILD_DEPENDS cmake)
+list(REMOVE_DUPLICATES CPACK_DEBIAN_BUILD_DEPENDS)
+list(SORT CPACK_DEBIAN_BUILD_DEPENDS)
+string(REPLACE ";" ", " build_depends "${CPACK_DEBIAN_BUILD_DEPENDS}")
 file(WRITE ${debian_control}
   "Source: ${CPACK_DEBIAN_PACKAGE_NAME}\n"
   "Section: ${CPACK_DEBIAN_PACKAGE_SECTION}\n"
   "Priority: ${CPACK_DEBIAN_PACKAGE_PRIORITY}\n"
   "Maintainer: ${CPACK_PACKAGE_CONTACT}\n"
-  "Build-Depends: "
-  )
-
-foreach(DEP ${CPACK_DEBIAN_BUILD_DEPENDS})
-  file(APPEND ${debian_control} "${DEP}, ")
-endforeach(DEP)  
-
-file(APPEND ${debian_control} "cmake\n"
+  "Build-Depends: ${build_depends}\n"
   "Standards-Version: 3.9.1\n"
   "Homepage: ${CPACK_PACKAGE_VENDOR}\n"
 # "\n"
@@ -57,13 +54,22 @@ file(APPEND ${debian_control} "cmake\n"
   )
 
 foreach(component ${CPACK_COMPONENTS_ALL})
-  get_cpack_component(deb_package "${component}_DEB_PACKAGE")
-  get_cpack_component(display_name "${component}_DISPLAY_NAME")
-  get_cpack_component(description "${component}_DESCRIPTION")
+  string(TOUPPER "${component}" COMPONENT)
+  set(display_name "${CPACK_COMPONENT_${COMPONENT}_DISPLAY_NAME}")
+  set(description "${CPACK_COMPONENT_${COMPONENT}_DESCRIPTION}")
+  
+  set(deb_depends)
+  foreach(dep ${CPACK_COMPONENT_${COMPONENT}_DEPENDS})
+    string(TOUPPER "${dep}" DEP)
+    list(APPEND deb_depends ${CPACK_COMPONENT_${DEP}_DEB_PACKAGE})
+  endforeach(dep)
+  string(REPLACE ";" ", " deb_depends "${deb_depends}")
+
   file(APPEND ${debian_control}
     "\n"
-    "Package: ${deb_package}\n"
+    "Package: ${CPACK_COMPONENT_${COMPONENT}_DEB_PACKAGE}\n"
     "Architecture: any\n"
+    "Depends: ${deb_depends}\n"
     "Description: ${CPACK_PACKAGE_DESCRIPTION_SUMMARY}: ${display_name}\n"
     "${DEB_LONG_DESCRIPTION}"
     " .\n"
@@ -74,9 +80,7 @@ endforeach(component)
 ################################################################################
 # debian/copyright
 set(debian_copyright ${debian_dir}/copyright)
-execute_process(COMMAND ${CMAKE_COMMAND} -E
-  copy ${CPACK_RESOURCE_FILE_LICENSE} ${debian_copyright}
-  )
+configure_file(${CPACK_RESOURCE_FILE_LICENSE} ${debian_copyright} COPYONLY)
 
 ################################################################################
 # debian/rules
@@ -104,12 +108,12 @@ file(WRITE ${debian_rules}
   )
 
 foreach(component ${CPACK_COMPONENTS_ALL})
-  get_cpack_component(deb_package "${component}_DEB_PACKAGE")
+  string(TOUPPER "${component}" COMPONENT)
   set(path debian/${component})
   file(APPEND ${debian_rules}
     "	cd $(BUILDDIR); cmake -DCOMPONENT=${component} -DCMAKE_INSTALL_PREFIX=../${path}/usr -P cmake_install.cmake\n"
     "	cmake -E make_directory ${path}/DEBIAN\n"
-    "	dpkg-gencontrol -p${deb_package} -P${path}\n"
+    "	dpkg-gencontrol -p${CPACK_COMPONENT_${COMPONENT}_DEB_PACKAGE} -P${path}\n"
     "	dpkg --build ${path} ..\n"
     )
 endforeach(component)
@@ -137,8 +141,9 @@ file(WRITE ${debian_dir}/source/format "3.0 (native)")
 # debian/changelog
 set(debian_changelog ${debian_dir}/changelog)
 execute_process(COMMAND date -R  OUTPUT_VARIABLE DATE_TIME)
+execute_process(COMMAND date +%y%m%d%H%M OUTPUT_VARIABLE suffix OUTPUT_STRIP_TRAILING_WHITESPACE)
 file(WRITE ${debian_changelog}
-  "${CPACK_DEBIAN_PACKAGE_NAME} (${BOOST_VERSION}) maverick; urgency=low\n\n"
+  "${CPACK_DEBIAN_PACKAGE_NAME} (${BOOST_VERSION}-${suffix}) natty; urgency=low\n\n"
   "  * Package built with CMake\n\n"
   " -- ${CPACK_PACKAGE_CONTACT}  ${DATE_TIME}"
   )

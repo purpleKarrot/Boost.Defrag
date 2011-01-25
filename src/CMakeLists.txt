@@ -123,6 +123,7 @@ add_subdirectory(
   )
 
 if(NOT WIN32)
+  set(CPACK_DEBIAN_BUILD_DEPENDS doxygen dblatex xsltproc docbook-xml docbook-xsl)
   include(BoostDebian)
 endif(NOT WIN32)
 

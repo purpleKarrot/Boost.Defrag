@@ -209,13 +209,94 @@ include_directories(../include)
 #set(CMAKE_SHARED_LIBRARY_PREFIX libboost_)
 #set(CMAKE_STATIC_LIBRARY_PREFIX libboost_)
 
-unset(CPACK_COMPONENTS_ALL CACHE)
+unset(BOOST_PROJECTS_ALL CACHE)
 
 ##########################################################################
 @BOOST_MODULE_ADD_SUBDIRECTORIES@
 
 ##########################################################################
 
-list(REMOVE_DUPLICATES CPACK_COMPONENTS_ALL)
-list(SORT CPACK_COMPONENTS_ALL)
+list(REMOVE_DUPLICATES BOOST_PROJECTS_ALL)
+list(SORT BOOST_PROJECTS_ALL)
+
+# function to set CPACK_COMPONENT_* globally
+function(set_cpack_component name value)
+  string(TOUPPER "CPACK_COMPONENT_${name}" variable)
+  set(${variable} ${value} CACHE INTERNAL "" FORCE)
+endfunction(set_cpack_component)
+
+unset(CPACK_COMPONENTS_ALL CACHE)
+
+foreach(project ${BOOST_PROJECTS_ALL})
+  set(has_dev ${BOOST_PROJECT_${project}_HAS_DEV})
+  set(has_doc ${BOOST_PROJECT_${project}_HAS_DOC})
+  set(has_exe ${BOOST_PROJECT_${project}_HAS_EXE})
+  set(has_lib ${BOOST_PROJECT_${project}_HAS_LIB})
+  set(name "${BOOST_PROJECT_${project}_NAME}")
+  set(description "${BOOST_PROJECT_${project}_DESCRIPTION}")
+
+  set_cpack_component(GROUP_${project}_GROUP_DISPLAY_NAME "${name}")
+  set_cpack_component(GROUP_${project}_GROUP_DESCRIPTION "${description}")
+
+  set_cpack_component(${project}_DEV_GROUP "${project}_group")
+  set_cpack_component(${project}_LIB_GROUP "${project}_group")
+  set_cpack_component(${project}_EXE_GROUP "${project}_group")
+
+  set_cpack_component(${project}_LIB_DISPLAY_NAME "${name}: Shared Libraries")
+  set_cpack_component(${project}_DEV_DISPLAY_NAME "${name}: Static and import Libraries")
+  set_cpack_component(${project}_EXE_DISPLAY_NAME "${name}: Tools")
+
+  set_cpack_component(${project}_LIB_DESCRIPTION "${description}")
+  set_cpack_component(${project}_DEV_DESCRIPTION "${description}")
+  set_cpack_component(${project}_EXE_DESCRIPTION "${description}")
+
+  # Debian
+  string(REPLACE "_" "-" debian_name "${project}${BOOST_VERSION}")
+  set_cpack_component(${project}_LIB_DEB_PACKAGE "libboost-${debian_name}")
+  set_cpack_component(${project}_DEV_DEB_PACKAGE "libboost-${debian_name}-dev")
+  set_cpack_component(${project}_EXE_DEB_PACKAGE "boost-${debian_name}")
+
+  # dependencies
+  set(dev_depends)
+  set(exe_depends)
+  set(lib_depends)
+
+  if(has_dev AND has_lib)
+    list(APPEND dev_depends ${project}_lib)
+  endif(has_dev AND has_lib)
+
+  if(has_exe AND has_lib)
+    list(APPEND exe_depends ${project}_lib)
+  endif(has_exe AND has_lib)
+
+  foreach(dependancy ${BOOST_PROJECT_${project}_DEPENDS})
+    if(has_dev AND BOOST_PROJECT_${dependancy}_HAS_DEV)
+      list(APPEND dev_depends ${dependancy}_dev)
+    endif(has_dev AND BOOST_PROJECT_${dependancy}_HAS_DEV)
+    if(has_lib AND BOOST_PROJECT_${dependancy}_HAS_LIB)
+      list(APPEND lib_depends ${dependancy}_lib)
+    endif(has_lib AND BOOST_PROJECT_${dependancy}_HAS_LIB)
+    if(has_exe AND BOOST_PROJECT_${dependancy}_HAS_LIB)
+      list(APPEND exe_depends ${dependancy}_lib)
+    endif(has_exe AND BOOST_PROJECT_${dependancy}_HAS_LIB)
+  endforeach(dependancy)
+
+  set_cpack_component(${project}_DEV_DEPENDS "${dev_depends}")
+  set_cpack_component(${project}_EXE_DEPENDS "${exe_depends}")
+  set_cpack_component(${project}_LIB_DEPENDS "${lib_depends}")
+
+  if(has_exe)
+    list(APPEND CPACK_COMPONENTS_ALL ${project}_exe)
+  endif(has_exe)
+
+  if(has_lib)
+    list(APPEND CPACK_COMPONENTS_ALL ${project}_lib)
+  endif(has_lib)
+
+  if(has_dev)
+    list(APPEND CPACK_COMPONENTS_ALL ${project}_dev)
+  endif(has_dev)
+endforeach(project)
+
+# make it global
 set(CPACK_COMPONENTS_ALL ${CPACK_COMPONENTS_ALL} CACHE INTERNAL "" FORCE)
