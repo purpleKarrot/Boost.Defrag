@@ -209,6 +209,9 @@ include_directories(../include)
 #set(CMAKE_SHARED_LIBRARY_PREFIX libboost_)
 #set(CMAKE_STATIC_LIBRARY_PREFIX libboost_)
 
+set(BOOSTBOOK_DTD_DIR "${CMAKE_CURRENT_SOURCE_DIR}/boostbook/dtd" CACHE FILEPATH "" FORCE)
+set(BOOSTBOOK_XSL_DIR "${CMAKE_CURRENT_SOURCE_DIR}/boostbook/xsl" CACHE FILEPATH "" FORCE)
+
 unset(BOOST_PROJECTS_ALL CACHE)
 
 ##########################################################################
