@@ -12,6 +12,3 @@ boost_project("Disjoint Sets"
     test
     graph
   )
-
-file(GLOB_RECURSE headers ${CMAKE_CURRENT_SOURCE_DIR}/boost/*.?pp)
-boost_add_headers("" ${headers})
