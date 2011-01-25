@@ -235,12 +235,13 @@ foreach(project ${BOOST_PROJECTS_ALL})
   set(name "${BOOST_PROJECT_${project}_NAME}")
   set(description "${BOOST_PROJECT_${project}_DESCRIPTION}")
 
-  set_cpack_component(GROUP_${project}_GROUP_DISPLAY_NAME "${name}")
-  set_cpack_component(GROUP_${project}_GROUP_DESCRIPTION "${description}")
+  set(group "boost_${project}")
+  set_cpack_component(GROUP_${group}_DISPLAY_NAME "${name}")
+  set_cpack_component(GROUP_${group}_DESCRIPTION "${description}")
 
-  set_cpack_component(${project}_DEV_GROUP "${project}_group")
-  set_cpack_component(${project}_LIB_GROUP "${project}_group")
-  set_cpack_component(${project}_EXE_GROUP "${project}_group")
+  set_cpack_component(${project}_DEV_GROUP "${group}")
+  set_cpack_component(${project}_LIB_GROUP "${group}")
+  set_cpack_component(${project}_EXE_GROUP "${group}")
 
   set_cpack_component(${project}_LIB_DISPLAY_NAME "${name}: Shared Libraries")
   set_cpack_component(${project}_DEV_DISPLAY_NAME "${name}: Static and import Libraries")

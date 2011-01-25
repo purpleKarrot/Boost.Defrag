@@ -9,4 +9,13 @@ boost_project(BoostBook
     "an SGML- or XML-based format for describing documentation."
   )
 
-boost_documentation(doc/boostbook.xml)
+install(DIRECTORY dtd xsl
+  DESTINATION share/boostbook
+# CONFIGURATIONS
+  COMPONENT boostbook_exe
+  )
+
+# 
+set_boost_project("${BOOST_HAS_EXE_VAR}" ON)
+
+add_subdirectory(doc)
