@@ -67,7 +67,7 @@ function(add_math_library name suffix)
     list(APPEND sources "src/tr1/${src}${suffix}.cpp")
   endforeach(src)
   boost_add_library(math_${name}
-    PCH "boost/math/special_functions.hpp"
+    PRECOMPILE <boost/math/special_functions.hpp>
     SOURCES ${sources}
     )
 endfunction(add_math_library)
