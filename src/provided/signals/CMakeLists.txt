@@ -13,16 +13,17 @@ boost_project(Signals
     bind
   )
 
+if(MSVC)
+  add_definitions(/wd4005) # 'BOOST_SIGNALS_SOURCE': macro redefinition
+endif(MSVC)
+
 file(GLOB_RECURSE headers ${CMAKE_CURRENT_SOURCE_DIR}/boost/*.?pp)
 boost_add_headers("" ${headers})
 
 boost_add_library(signals
-  SOURCES
-    src/trackable.cpp
-    src/connection.cpp
-    src/named_slot_map.cpp
-    src/signal_base.cpp
-    src/slot.cpp
-  # <define>BOOST_SIGNALS_NO_LIB=1
-  # <link>shared:<define>BOOST_SIGNALS_DYN_LINK=1
+  src/trackable.cpp
+  src/connection.cpp
+  src/named_slot_map.cpp
+  src/signal_base.cpp
+  src/slot.cpp
   )

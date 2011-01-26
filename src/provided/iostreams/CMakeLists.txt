@@ -11,6 +11,12 @@ boost_project(Iostreams
     random
   )
 
+add_definitions(-DBOOST_IOSTREAMS_USE_DEPRECATED)
+
+if(MSVC)
+  add_definitions(/wd4005) # 'BOOST_IOSTREAMS_SOURCE': macro redefinition
+endif(MSVC)
+
 file(GLOB_RECURSE headers ${CMAKE_CURRENT_SOURCE_DIR}/boost/*.?pp)
 boost_add_headers("" ${headers})
 
@@ -36,6 +42,4 @@ boost_add_library(iostreams
     ${sources}
   LINK_LIBRARIES
     ${link_libraries}
-  # <link>shared:<define>BOOST_IOSTREAMS_DYN_LINK=1 
-  # <define>BOOST_IOSTREAMS_USE_DEPRECATED
   )

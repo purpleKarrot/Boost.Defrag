@@ -13,11 +13,11 @@ boost_project(Random
     static_assert
   )
 
+if(MSVC)
+  add_definitions(/wd4005) # 'BOOST_RANDOM_SOURCE': macro redefinition
+endif(MSVC)
+
 file(GLOB_RECURSE headers ${CMAKE_CURRENT_SOURCE_DIR}/boost/*.?pp)
 boost_add_headers("" ${headers})
 
-boost_add_library(random
-  SOURCES
-    src/random_device.cpp
-  # <link>shared:<define>BOOST_RANDOM_DYN_LINK
-  )
+boost_add_library(random src/random_device.cpp)

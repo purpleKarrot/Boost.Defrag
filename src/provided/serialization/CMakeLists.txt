@@ -14,6 +14,10 @@ boost_project(Serialization
     variant
   )
 
+if(MSVC)
+  add_definitions(/wd4005) # 'BOOST_SERIALIZATION_SOURCE': macro redefinition
+endif(MSVC)
+
 file(GLOB_RECURSE headers ${CMAKE_CURRENT_SOURCE_DIR}/boost/*.?pp)
 boost_add_headers("" ${headers})
 
@@ -26,36 +30,34 @@ endif(MSVC)
 # endif(GCC)
 
 boost_add_library(serialization
-  SOURCES
-    src/basic_archive
-    src/basic_iarchive
-    src/basic_iserializer
-    src/basic_oarchive
-    src/basic_oserializer
-    src/basic_pointer_iserializer
-    src/basic_pointer_oserializer
-    src/basic_serializer_map
-    src/basic_text_iprimitive
-    src/basic_text_oprimitive
-    src/basic_xml_archive
-    src/binary_iarchive
-    src/binary_oarchive
-    src/extended_type_info
-    src/extended_type_info_typeid
-    src/extended_type_info_no_rtti
-    src/polymorphic_iarchive
-    src/polymorphic_oarchive
-    src/stl_port
-    src/text_iarchive
-    src/text_oarchive
-    src/void_cast
-    src/archive_exception
-    src/xml_grammar
-    src/xml_iarchive
-    src/xml_oarchive
-    src/xml_archive_exception
-    src/shared_ptr_helper
-#  SHARED_DEFINITION BOOST_SERIALIZATION_DYN_LINK=1
+  src/basic_archive
+  src/basic_iarchive
+  src/basic_iserializer
+  src/basic_oarchive
+  src/basic_oserializer
+  src/basic_pointer_iserializer
+  src/basic_pointer_oserializer
+  src/basic_serializer_map
+  src/basic_text_iprimitive
+  src/basic_text_oprimitive
+  src/basic_xml_archive
+  src/binary_iarchive
+  src/binary_oarchive
+  src/extended_type_info
+  src/extended_type_info_typeid
+  src/extended_type_info_no_rtti
+  src/polymorphic_iarchive
+  src/polymorphic_oarchive
+  src/stl_port
+  src/text_iarchive
+  src/text_oarchive
+  src/void_cast
+  src/archive_exception
+  src/xml_grammar
+  src/xml_iarchive
+  src/xml_oarchive
+  src/xml_archive_exception
+  src/shared_ptr_helper
   )
 
 boost_add_library(wserialization
@@ -71,5 +73,4 @@ boost_add_library(wserialization
     src/codecvt_null
   LINK_BOOST_LIBRARIES
     serialization 
-#  SHARED_DEFINITION BOOST_SERIALIZATION_DYN_LINK=1
   )

@@ -8,12 +8,14 @@ boost_project(System
     utility
   )
 
+if(MSVC)
+  add_definitions(/wd4005) # 'BOOST_SYSTEM_SOURCE': macro redefinition
+endif(MSVC)
+
 file(GLOB_RECURSE headers ${CMAKE_CURRENT_SOURCE_DIR}/boost/*.?pp)
 boost_add_headers("" ${headers})
 
 boost_add_library(system
-  SOURCES
-    src/error_code.cpp
-    src/local_free_on_destruction.hpp
-#  SHARED_DEFINITION "BOOST_SYSTEM_DYN_LINK=1"
+  src/error_code.cpp
+  src/local_free_on_destruction.hpp
   )

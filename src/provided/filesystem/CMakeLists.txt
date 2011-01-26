@@ -11,6 +11,10 @@ boost_project(Filesystem
     smart_ptr
   )
 
+if(MSVC)
+  add_definitions(/wd4005) # 'BOOST_FILESYSTEM_SOURCE': macro redefinition
+endif(MSVC)
+
 file(GLOB_RECURSE headers ${CMAKE_CURRENT_SOURCE_DIR}/boost/*.?pp)
 boost_add_headers("" ${headers})
 
@@ -44,5 +48,4 @@ boost_add_library(filesystem
     v3/src/windows_file_codecvt
   LINK_BOOST_LIBRARIES
     system
-#  SHARED_DEFINITION "BOOST_FILESYSTEM_DYN_LINK=1"
   )

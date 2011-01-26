@@ -21,6 +21,10 @@ boost_project(Graph
     mpi # optional
   )
 
+if(MSVC)
+  add_definitions(/wd4005) # 'BOOST_GRAPH_SOURCE': macro redefinition
+endif(MSVC)
+
 file(GLOB_RECURSE headers ${CMAKE_CURRENT_SOURCE_DIR}/boost/*.?pp)
 boost_add_headers("" ${headers})
 
@@ -30,6 +34,4 @@ boost_add_library(graph
     src/graphml.cpp
   LINK_BOOST_LIBRARIES
     regex
-  # <link>shared:<define>BOOST_GRAPH_DYN_LINK=1
-  # <toolset>msvc-7.1:<cxxflags>-GR-
   )
