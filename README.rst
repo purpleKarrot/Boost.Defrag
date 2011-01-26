@@ -1,6 +1,6 @@
 Boost.CMake is an approach to a modularized build of the `Boost C++ Libraries <http://www.boost.org/>`_ with `CMake <http://cmake.org/>`_.
 
-.. note:: This is an experimental project. Usage for other purposes than testing is strongly discouraged!
+**This is an experimental project. Usage for other purposes than testing is strongly discouraged!**
 
 Already implemented features:
 --------------------------------------------
@@ -21,6 +21,7 @@ In the near future:
 Aggregation:
 ------------------
 Modules can be fetched from a number of different sources:
+
 * Checkout the module's CVS repository (requires cvs command line client).
 * Checkout the module's Subversion repository (requires svn command line client).
 * Clone the module's Git repository (requires git command line client).
