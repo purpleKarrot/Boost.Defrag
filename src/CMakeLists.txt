@@ -104,18 +104,18 @@ execute_process(COMMAND ${CMAKE_COMMAND} -E copy_directory
   ${CMAKE_CURRENT_SOURCE_DIR}/provided ${BOOST_MODULES_DIR}
   )
 
-if(CMAKE_HOST_WIN32)
-  boost_fetch_download(docbook_xml "${CMAKE_BINARY_DIR}"
-    URL http://www.oasis-open.org/docbook/xml/4.2/docbook-xml-4.2.zip
-    MD5 73fe50dfe74ca631c1602f558ed8961f
-    )
-  boost_fetch_download(docbook_xsl "${CMAKE_BINARY_DIR}"
-    URL http://sourceforge.net/projects/docbook/files/docbook-xsl/1.75.2/docbook-xsl-1.75.2.tar.bz2/download
-    MD5 0c76a58a8e6cb5ab49f819e79917308f
-    )
-  set(DOCBOOK_DTD_DIR "${CMAKE_BINARY_DIR}/docbook_xml" CACHE FILEPATH "" FORCE)
-  set(DOCBOOK_XSL_DIR "${CMAKE_BINARY_DIR}/docbook_xsl" CACHE FILEPATH "" FORCE)
-endif(CMAKE_HOST_WIN32)
+#if(CMAKE_HOST_WIN32)
+#  boost_fetch_download(docbook_xml "${CMAKE_BINARY_DIR}"
+#    URL http://www.oasis-open.org/docbook/xml/4.2/docbook-xml-4.2.zip
+#    MD5 73fe50dfe74ca631c1602f558ed8961f
+#    )
+#  boost_fetch_download(docbook_xsl "${CMAKE_BINARY_DIR}"
+#    URL http://sourceforge.net/projects/docbook/files/docbook-xsl/1.75.2/docbook-xsl-1.75.2.tar.bz2/download
+#    MD5 0c76a58a8e6cb5ab49f819e79917308f
+#    )
+#  set(DOCBOOK_DTD_DIR "${CMAKE_BINARY_DIR}/docbook_xml" CACHE FILEPATH "" FORCE)
+#  set(DOCBOOK_XSL_DIR "${CMAKE_BINARY_DIR}/docbook_xsl" CACHE FILEPATH "" FORCE)
+#endif(CMAKE_HOST_WIN32)
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt.in
   ${BOOST_MODULES_DIR}/CMakeLists.txt @ONLY)
