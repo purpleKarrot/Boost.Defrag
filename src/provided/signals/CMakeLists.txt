@@ -17,6 +17,7 @@ if(MSVC)
   add_definitions(
     /wd4005 # 'BOOST_SIGNALS_SOURCE': macro redefinition
     /wd4251 # class needs to have dll-interface to be used by clients
+    /wd4275 # 'boost::noncopyable' used as base for dll-interface class 
     )
 endif(MSVC)
 

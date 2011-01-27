@@ -14,7 +14,12 @@ boost_project(Iostreams
 add_definitions(-DBOOST_IOSTREAMS_USE_DEPRECATED)
 
 if(MSVC)
-  add_definitions(/wd4005) # 'BOOST_IOSTREAMS_SOURCE': macro redefinition
+  add_definitions(
+    /wd4005 # 'BOOST_IOSTREAMS_SOURCE': macro redefinition
+    /wd4244 # conversion from 'boost::iostreams::stream_offset' to 'size_t'
+    /wd4251 # class needs to have dll-interface to be used by clients
+    /wd4800 # forcing value to bool 'true' or 'false'
+    )
 endif(MSVC)
 
 file(GLOB_RECURSE headers ${CMAKE_CURRENT_SOURCE_DIR}/boost/*.?pp)
