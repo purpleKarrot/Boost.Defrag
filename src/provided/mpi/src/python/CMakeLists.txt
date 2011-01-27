@@ -10,8 +10,6 @@ boost_add_library(${boost_mpi_name}_python
   LINK_BOOST_LIBRARIES
     ${boost_mpi_name}
     python
-  LINK_LIBRARIES
-    ${MPI_LIBRARIES}
   )
 
 boost_add_python_extension(mpi
@@ -29,9 +27,5 @@ boost_add_python_extension(mpi
     status.cpp
     py_timer.cpp
   LINK_BOOST_LIBRARIES
-    python
     ${boost_mpi_name}_python
-    ${boost_mpi_name}
-  LINK_LIBRARIES
-    ${MPI_LIBRARIES}
   )

@@ -8,10 +8,6 @@
 #   http://www.boost.org/LICENSE_1_0.txt                                 #
 ##########################################################################
 
-if(NOT DEFINED BOOST_UPDATE_SOURCE)
-  set(BOOST_UPDATE_SOURCE ON)
-endif()
-
 set(branch "stable") # or testing, unstable?
 
 # global constants
@@ -26,13 +22,7 @@ set(CPACK_SOURCE_INSTALLED_DIRECTORIES
   PARENT_SCOPE
   )
 
-if(NOT BOOST_UPDATE_SOURCE)
-  add_subdirectory(
-    ${Boost_BINARY_DIR}/${branch}-source/src
-    ${Boost_BINARY_DIR}/${branch}-binary
-    )
-  return()
-endif()
+if(BOOST_UPDATE_SOURCE OR NOT DEFINED BOOST_UPDATE_SOURCE)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/CMake)
 
@@ -41,10 +31,6 @@ include(BoostFetchGit)
 include(BoostFetchSubversion)
 include(BoostFetchDownload)
 include(BoostFetchPristineBoost)
-
-if(NOT DEFINED BOOST_UPDATE_SOURCE)
-  set(BOOST_UPDATE_SOURCE ON)
-endif()
 
 file(COPY
   ${Boost_SOURCE_DIR}/CMake
@@ -99,11 +85,6 @@ foreach(module ${BOOST_MODULE_LIST})
   endif()
 endforeach(module)
 
-# TODO: remove this once all modules provide their own CMakeLists.txt file
-execute_process(COMMAND ${CMAKE_COMMAND} -E copy_directory
-  ${CMAKE_CURRENT_SOURCE_DIR}/provided ${BOOST_MODULES_DIR}
-  )
-
 #if(CMAKE_HOST_WIN32)
 #  boost_fetch_download(docbook_xml "${CMAKE_BINARY_DIR}"
 #    URL http://www.oasis-open.org/docbook/xml/4.2/docbook-xml-4.2.zip
@@ -120,6 +101,14 @@ execute_process(COMMAND ${CMAKE_COMMAND} -E copy_directory
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt.in
   ${BOOST_MODULES_DIR}/CMakeLists.txt @ONLY)
 
+set(BOOST_UPDATE_SOURCE OFF CACHE BOOL "update source" FORCE)
+endif(BOOST_UPDATE_SOURCE OR NOT DEFINED BOOST_UPDATE_SOURCE)
+
+# TODO: remove this once all modules provide their own CMakeLists.txt file
+execute_process(COMMAND ${CMAKE_COMMAND} -E copy_directory
+  ${CMAKE_CURRENT_SOURCE_DIR}/provided ${BOOST_MODULES_DIR}
+  )
+
 add_subdirectory(
   ${Boost_BINARY_DIR}/${branch}-source/src
   ${Boost_BINARY_DIR}/${branch}-binary
@@ -129,5 +118,3 @@ if(NOT WIN32)
   set(CPACK_DEBIAN_BUILD_DEPENDS doxygen dblatex xsltproc docbook-xml docbook-xsl)
   include(BoostDebian)
 endif(NOT WIN32)
-
-set(BOOST_UPDATE_SOURCE OFF CACHE BOOL "update source" FORCE)
