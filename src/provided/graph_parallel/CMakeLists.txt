@@ -17,6 +17,14 @@ boost_project("Graph Parallel"
 file(GLOB_RECURSE headers ${CMAKE_CURRENT_SOURCE_DIR}/boost/*.?pp)
 boost_add_headers("" ${headers})
 
+if(MSVC)
+  add_definitions(
+    /wd4251 # class needs to have dll-interface to be used by clients
+    /wd4275 # non dll-interface class used as base for dll-interface class
+    /wd4800 # forcing value to bool 'true' or 'false' (performance warning)
+    )
+endif(MSVC)
+
 find_package(MPI)
 if(NOT MPI_FOUND)
   message(STATUS "Graph library does not contain MPI-based parallel components.")

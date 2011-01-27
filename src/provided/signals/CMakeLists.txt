@@ -14,7 +14,10 @@ boost_project(Signals
   )
 
 if(MSVC)
-  add_definitions(/wd4005) # 'BOOST_SIGNALS_SOURCE': macro redefinition
+  add_definitions(
+    /wd4005 # 'BOOST_SIGNALS_SOURCE': macro redefinition
+    /wd4251 # class needs to have dll-interface to be used by clients
+    )
 endif(MSVC)
 
 file(GLOB_RECURSE headers ${CMAKE_CURRENT_SOURCE_DIR}/boost/*.?pp)
