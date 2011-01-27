@@ -15,15 +15,15 @@ boost_project(Serialization
   )
 
 if(MSVC)
-  add_definitions(/wd4005) # 'BOOST_SERIALIZATION_SOURCE': macro redefinition
+  add_definitions(
+    /Gy
+    /wd4005 # 'BOOST_SERIALIZATION_SOURCE': macro redefinition
+    /wd4244 # converting 'std::streamsize' in 'size_t'
+    )
 endif(MSVC)
 
 file(GLOB_RECURSE headers ${CMAKE_CURRENT_SOURCE_DIR}/boost/*.?pp)
 boost_add_headers("" ${headers})
-
-if(MSVC)
-  add_definitions(/Gy)
-endif(MSVC)
 
 # if(GCC)
 #   add_definitions(-fvisibility=hidden)
