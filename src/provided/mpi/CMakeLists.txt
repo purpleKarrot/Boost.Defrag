@@ -16,4 +16,12 @@ if(MSVC)
     )
 endif(MSVC)
 
-add_subdirectory(src)
+if(BOOST_DEBIAN_PACKAGES)
+  set(BOOST_MPI_BASE mpich2)
+  add_subdirectory(src mpich2)
+
+  set(BOOST_MPI_BASE openmpi)
+  add_subdirectory(src openmpi)
+else()
+  add_subdirectory(src)
+endif()
