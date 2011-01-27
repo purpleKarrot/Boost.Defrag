@@ -212,6 +212,9 @@ include_directories(../include)
 set(BOOSTBOOK_DTD_DIR "${CMAKE_CURRENT_SOURCE_DIR}/boostbook/dtd" CACHE FILEPATH "" FORCE)
 set(BOOSTBOOK_XSL_DIR "${CMAKE_CURRENT_SOURCE_DIR}/boostbook/xsl" CACHE FILEPATH "" FORCE)
 
+set(QUICKBOOK_FOUND ON CACHE INTERNAL "" FORCE)
+set(QUICKBOOK_EXECUTABLE quickbook)
+
 unset(BOOST_PROJECTS_ALL CACHE)
 
 ##########################################################################
