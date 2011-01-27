@@ -20,6 +20,13 @@ include_directories(${MPI_INCLUDE_PATH})
 find_package(PythonLibs REQUIRED)
 include_directories(${PYTHON_INCLUDE_DIRS})
 
+if(MSVC)
+  add_definitions(
+    /wd4251 # class needs to have dll-interface to be used by clients
+    /wd4275 # non dll-interface class used as base for dll-interface class
+    )
+endif(MSVC)
+
 boost_add_library(mpi
   SOURCES
     src/broadcast.cpp
@@ -45,8 +52,6 @@ boost_add_library(mpi
     serialization
   LINK_LIBRARIES
     ${MPI_LIBRARIES}
-  # <define>BOOST_MPI_SOURCE=1
-  # <link>shared:<define>BOOST_MPI_DYN_LINK=1
   )
 
 boost_add_library(mpi_python
@@ -57,10 +62,6 @@ boost_add_library(mpi_python
     python
   LINK_LIBRARIES
     ${MPI_LIBRARIES}
-  # <link>shared:<define>BOOST_MPI_DYN_LINK=1
-  # <link>shared:<define>BOOST_MPI_PYTHON_DYN_LINK=1
-  # <link>shared:<define>BOOST_PYTHON_DYN_LINK=1        
-  # <define>BOOST_MPI_PYTHON_SOURCE=1
   )
 
 boost_add_python_extension(mpi
@@ -83,8 +84,4 @@ boost_add_python_extension(mpi
     mpi
   LINK_LIBRARIES
     ${MPI_LIBRARIES}
-  # <link>shared:<define>BOOST_MPI_DYN_LINK=1    
-  # <link>shared:<define>BOOST_MPI_PYTHON_DYN_LINK=1        
-  # <link>shared:<define>BOOST_PYTHON_DYN_LINK=1    
-  # <link>shared <runtime-link>shared
   )
