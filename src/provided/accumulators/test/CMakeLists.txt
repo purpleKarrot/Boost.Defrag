@@ -3,9 +3,9 @@
 
 include(BoostTesting)
 
-if(MSVC)
-  add_definitions(-D_HAS_ITERATOR_DEBUGGING=0)
-endif(MSVC)
+#if(MSVC)
+#  add_definitions(-D_HAS_ITERATOR_DEBUGGING=0)
+#endif(MSVC)
 
 boost_test_suite(
   RUN
