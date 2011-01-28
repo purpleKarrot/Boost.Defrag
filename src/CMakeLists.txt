@@ -8,6 +8,8 @@
 #   http://www.boost.org/LICENSE_1_0.txt                                 #
 ##########################################################################
 
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/CMake)
+
 set(branch "stable") # or testing, unstable?
 
 # global constants
@@ -23,8 +25,6 @@ set(CPACK_SOURCE_INSTALLED_DIRECTORIES
   )
 
 if(BOOST_UPDATE_SOURCE OR NOT DEFINED BOOST_UPDATE_SOURCE)
-
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/CMake)
 
 include(BoostModule)
 include(BoostFetchGit)

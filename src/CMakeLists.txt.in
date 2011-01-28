@@ -48,11 +48,6 @@ else()
   include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 endif (TEST_INSTALLED_TREE)
 
-# Boost.Build version 2 does this due to trouble with autolinking
-# during building and testing.  
-# TODO: See if we can actually use auto-linking in our regression tests.
-add_definitions(-DBOOST_ALL_NO_LIB=1)
-
 
 # Multi-threading support
 if(CMAKE_SYSTEM_NAME STREQUAL "SunOS")
