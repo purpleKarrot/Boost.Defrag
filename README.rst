@@ -11,6 +11,9 @@ Already implemented features:
 * Create a Debian source package that can be uploaded to a Launchpad PPA where it is built and packaged into many binary Debian packages.
 * Build Documentation (the usual quickbook-doxygen-boostbook-chain).
 * Tested on Windows (Visual Studio 10) and Ubuntu (GCC).
+* Precompiled headers (currently MSVC only). 
+* Build two Boost.MPI libraries on Debian: boost_openmpi and boost_mpich2.
+* Tests actually make use of Boost's autolinking feature.
 
 In the near future:
 -------------------------
