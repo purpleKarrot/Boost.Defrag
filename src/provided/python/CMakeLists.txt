@@ -14,7 +14,7 @@ boost_project(Python
   )
 
 file(GLOB_RECURSE headers ${CMAKE_CURRENT_SOURCE_DIR}/boost/*.?pp)
-boost_add_headers("" ${headers})
+boost_add_headers(${headers})
 
 find_package(PythonLibs)
 

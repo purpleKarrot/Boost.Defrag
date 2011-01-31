@@ -16,9 +16,7 @@ boost_project(Wave
   )
 
 file(GLOB_RECURSE headers ${CMAKE_CURRENT_SOURCE_DIR}/boost/*.?pp)
-boost_add_headers("" ${headers})
-
-add_definitions(-DBOOST_ALL_DYN_LINK=1)
+boost_add_headers(${headers})
 
 boost_add_library(wave
   SOURCES
@@ -33,10 +31,6 @@ boost_add_library(wave
     src/wave_config_constant.cpp
     src/cpplexer/re2clex/aq.cpp
     src/cpplexer/re2clex/cpp_re.cpp
-#  SHARED_DEFINITION
-#    "BOOST_ALL_DYN_LINK=1"   # why all?
-#  STATIC_DEFINITION
-#    "BOOST_THREAD_USE_LIB=1" # why thread?
   LINK_BOOST_LIBRARIES
     filesystem
     thread

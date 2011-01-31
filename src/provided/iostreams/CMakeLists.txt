@@ -23,7 +23,7 @@ if(MSVC)
 endif(MSVC)
 
 file(GLOB_RECURSE headers ${CMAKE_CURRENT_SOURCE_DIR}/boost/*.?pp)
-boost_add_headers("" ${headers})
+boost_add_headers(${headers})
 
 set(sources src/file_descriptor.cpp src/mapped_file.cpp)
 set(link_libraries)

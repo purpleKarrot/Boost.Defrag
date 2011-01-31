@@ -15,7 +15,7 @@ boost_project("Graph Parallel"
   )
 
 file(GLOB_RECURSE headers ${CMAKE_CURRENT_SOURCE_DIR}/boost/*.?pp)
-boost_add_headers("" ${headers})
+boost_add_headers(${headers})
 
 if(MSVC)
   add_definitions(

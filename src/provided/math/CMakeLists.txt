@@ -8,9 +8,8 @@ boost_project(Math
   )
 
 file(GLOB_RECURSE headers ${CMAKE_CURRENT_SOURCE_DIR}/boost/*.?pp)
-boost_add_headers("" ${headers})
+boost_add_headers(${headers})
 
-# TODO: precompile src/tr1/pch.hpp
 include_directories(src/tr1)
 
 set(C99_SOURCES

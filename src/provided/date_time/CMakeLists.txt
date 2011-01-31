@@ -16,7 +16,7 @@ boost_project("Date Time"
   )
 
 file(GLOB_RECURSE headers ${CMAKE_CURRENT_SOURCE_DIR}/boost/*.?pp)
-boost_add_headers("" ${headers})
+boost_add_headers(${headers})
 
 add_definitions(-DDATE_TIME_INLINE)
 
@@ -67,10 +67,7 @@ boost_documentation(xmldoc/date_time.xml
   )
 
 boost_add_library(date_time
-  SOURCES
-    src/gregorian/greg_month.cpp
-    src/gregorian/greg_weekday.cpp
-    src/gregorian/date_generators.cpp
-#  SHARED_DEFINITION "BOOST_ALL_DYN_LINK=1"
-#  STATIC_DEFINITION "BOOST_DATE_TIME_STATIC_LINK=1"
+  src/gregorian/greg_month.cpp
+  src/gregorian/greg_weekday.cpp
+  src/gregorian/date_generators.cpp
   )
