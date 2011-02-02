@@ -2,7 +2,6 @@
 # See http://www.boost.org/LICENSE_1_0.txt
 
 include(BoostProject)
-include(BoostDocs)
 include(BoostTesting)
 
 boost_project(Asio
@@ -19,3 +18,5 @@ boost_project(Asio
 
 file(GLOB_RECURSE headers ${CMAKE_CURRENT_SOURCE_DIR}/boost/*.?pp)
 boost_add_headers(${headers})
+
+add_subdirectory(doc)

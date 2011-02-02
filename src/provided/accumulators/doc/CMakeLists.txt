@@ -17,27 +17,16 @@ include(BoostDocs)
 # Reference. This is all so that the Doxygen-generated documentation for the
 # features shows the dependency relationships between them.
 
-set(accumulators_tagfile ${CMAKE_CURRENT_BINARY_DIR}/accumulators.tag)
-
-boost_doxygen(tagfile
+boost_doxygen(accumulators TAG
   INPUT
     ../boost/accumulators/framework/depends_on.hpp
     ../boost/accumulators/framework/extractor.hpp
-  OUTPUT
-    ${accumulators_tagfile}
   PARAMETERS
-    "GENERATE_HTML = NO"
-    "GENERATE_LATEX = NO"
-    "GENERATE_XML = NO"
-    "GENERATE_TAGFILE = accumulators.tag"
     "MACRO_EXPANSION = YES"
     "EXPAND_ONLY_PREDEF = YES"
     "PREDEFINED = \"BOOST_ACCUMULATORS_DOXYGEN_INVOKED=1\" \\
       \"BOOST_PP_REPEAT_FROM_TO(a,b,c,d)=\" \\
       \"BOOST_PP_ENUM_PARAMS(a,b)=b ## 1, b ## 2, ...\""
-  #<dependency>latex.check
-  #<dependency>dvips.check
-  #<dependency>gs.check
   )
 
 file(GLOB accdoc_headers
@@ -50,9 +39,6 @@ file(GLOB accdoc_headers
 boost_add_reference(accdoc ${accdoc_headers}
   DOXYFILE acc.doxyfile
   TITLE "Accumulators Framework Reference"
-  #<dependency>latex.check
-  #<dependency>dvips.check
-  #<dependency>gs.check
   )
 
 file(GLOB statsdoc_headers
@@ -76,19 +62,11 @@ file(WRITE ${copy_forms_cmake}
 
 boost_add_reference(statsdoc ${statsdoc_headers}
   DOXYFILE acc.doxyfile
+  TAGFILES ${accumulators_tag}
+  TITLE    "Statistics Library Reference"
   DOXYGEN_PARAMETERS
-    "TAGFILES = accumulators.tag"
     "GENERATE_HTML = YES"
     "HTML_OUTPUT=${statsdoc_html_dir}"
-  #<xsl:param>boost.doxygen.formuladir=images/accumulators/
-  TITLE "Statistics Library Reference"
-  #<dependency>tagfile
-  #<dependency>statsdoclatex.tag
-  #<dependency>latex.check
-  #<dependency>dvips.check
-  #<dependency>gs.check
-  DEPENDS
-    accumulators.tag
   )
 
 add_custom_command(OUTPUT formulas.copied
@@ -108,19 +86,11 @@ file(GLOB opdoc_headers
 boost_add_reference(opdoc ${opdoc_headers}
   DOXYFILE op.doxyfile
   TITLE "Numeric Operators Library Reference"
-  #<dependency>latex.check
-  #<dependency>dvips.check
-  #<dependency>gs.check
   )
 
 boost_documentation(accumulators.qbk
-  #DEPENDS
   accdoc.xml
   statsdoc.xml
   opdoc.xml
   formulas.copied
-  #<xsl:param>boost.max.id.length=1024
-  #<xsl:param>toc.max.depth=4
-  #<xsl:param>toc.section.depth=4
-  #<xsl:param>chunk.section.depth=2
   )
