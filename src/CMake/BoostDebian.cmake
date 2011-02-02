@@ -140,7 +140,7 @@ file(WRITE ${debian_dir}/source/format "3.0 (native)")
 ################################################################################
 # debian/changelog
 set(debian_changelog ${debian_dir}/changelog)
-execute_process(COMMAND date -R  OUTPUT_VARIABLE DATE_TIME)
+execute_process(COMMAND date +"%a, %d %b %Y %H:%M:%S %z" OUTPUT_VARIABLE DATE_TIME)
 execute_process(COMMAND date +%y%m%d%H%M OUTPUT_VARIABLE suffix OUTPUT_STRIP_TRAILING_WHITESPACE)
 file(WRITE ${debian_changelog}
   "${CPACK_DEBIAN_PACKAGE_NAME} (${BOOST_VERSION}-${suffix}) natty; urgency=low\n\n"
