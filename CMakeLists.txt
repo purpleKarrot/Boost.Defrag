@@ -27,6 +27,9 @@ if(BOOST_VERSION_PATCH GREATER 0)
   set(BOOST_VERSION "${BOOST_VERSION}.${BOOST_VERSION_PATCH}")
 endif(BOOST_VERSION_PATCH GREATER 0)
 
+# make universal binaries on OS X
+set(CMAKE_OSX_ARCHITECTURES "i386;x86_64" CACHE STRING "Architectures for OS X")
+
 # CPACK_PACKAGE_NAME may not contain spaces when generating rpms
 set(CPACK_PACKAGE_NAME "Boost")
 set(CPACK_PACKAGE_VENDOR "http://www.boost.org")
