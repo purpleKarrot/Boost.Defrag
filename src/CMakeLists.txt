@@ -34,16 +34,11 @@ include(BoostFetchPristineBoost)
 
 file(COPY
   ${Boost_SOURCE_DIR}/CMake
+  ${Boost_SOURCE_DIR}/resources
   ${Boost_SOURCE_DIR}/CMakeLists.txt
   ${Boost_SOURCE_DIR}/LICENSE_1_0.txt
   ${Boost_SOURCE_DIR}/README.rst
   DESTINATION ${BOOST_MONOLITHIC_ROOT}
-  )
-
-file(COPY
-  ${Boost_SOURCE_DIR}/src/boost.ico
-  ${Boost_SOURCE_DIR}/src/exe.rc
-  DESTINATION ${BOOST_MONOLITHIC_ROOT}/src
   )
 
 file(MAKE_DIRECTORY "${BOOST_MODULES_DIR}")

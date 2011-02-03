@@ -12,14 +12,12 @@ boost_project(QuickBook
     program_options 
   )
 
-add_definitions(-DBOOST_ALL_DYN_LINK=1)
-
 if(MSVC)
   add_definitions(-D_SCL_SECURE_NO_WARNINGS -D_CRT_SECURE_NO_WARNINGS
     /wd4244 /wd4267 /wd4355 /wd4511 /wd4512 /wd4701 /wd4702 /wd4800)
 endif()
 
-boost_add_executable(quickbook MULTI_THREADED
+boost_add_executable(quickbook
   SOURCES
     src/quickbook.cpp
     src/actions.cpp
