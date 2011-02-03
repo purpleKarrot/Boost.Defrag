@@ -29,7 +29,7 @@ boost_add_headers(${headers})
 #   add_definitions(-fvisibility=hidden)
 # endif(GCC)
 
-boost_add_library(serialization
+boost_add_library(serialization NO_SYMBOL
   src/basic_archive
   src/basic_iarchive
   src/basic_iserializer

@@ -25,7 +25,7 @@ endif()
 
 # <toolset>gcc-cygwin:<link>static
 
-boost_add_library(regex
+boost_add_library(regex NO_SYMBOL
   SOURCES
     src/c_regex_traits.cpp
     src/cpp_regex_traits.cpp

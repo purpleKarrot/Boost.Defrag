@@ -21,7 +21,7 @@ endif(MSVC)
 file(GLOB_RECURSE headers ${CMAKE_CURRENT_SOURCE_DIR}/boost/*.?pp)
 boost_add_headers(${headers})
 
-boost_add_library(program_options
+boost_add_library(program_options NO_SYMBOL
   src/cmdline
   src/config_file
   src/options_description

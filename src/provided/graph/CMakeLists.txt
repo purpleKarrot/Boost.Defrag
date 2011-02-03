@@ -28,7 +28,7 @@ endif(MSVC)
 file(GLOB_RECURSE headers ${CMAKE_CURRENT_SOURCE_DIR}/boost/*.?pp)
 boost_add_headers(${headers})
 
-boost_add_library(graph
+boost_add_library(graph NO_SYMBOL
   SOURCES
     src/read_graphviz_new.cpp
     src/graphml.cpp

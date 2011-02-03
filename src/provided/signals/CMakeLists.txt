@@ -24,7 +24,7 @@ endif(MSVC)
 file(GLOB_RECURSE headers ${CMAKE_CURRENT_SOURCE_DIR}/boost/*.?pp)
 boost_add_headers(${headers})
 
-boost_add_library(signals
+boost_add_library(signals NO_SYMBOL
   src/trackable.cpp
   src/connection.cpp
   src/named_slot_map.cpp

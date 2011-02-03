@@ -42,7 +42,7 @@ if(BZIP2_FOUND)
   list(APPEND link_libraries ${BZIP2_LIBRARIES})
 endif(BZIP2_FOUND)
 
-boost_add_library(iostreams
+boost_add_library(iostreams NO_SYMBOL
   SOURCES
     ${sources}
   LINK_LIBRARIES

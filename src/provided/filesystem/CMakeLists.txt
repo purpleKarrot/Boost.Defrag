@@ -33,7 +33,7 @@ forward_file(
 include_directories(${CMAKE_CURRENT_BINARY_DIR}/include)
 
 
-boost_add_library(filesystem
+boost_add_library(filesystem NO_SYMBOL
   SOURCES
     v2/src/v2_operations
     v2/src/v2_path
