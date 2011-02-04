@@ -102,4 +102,4 @@ add_subdirectory(src)
 ##########################################################################
 
 include(CPack)
-#cpack_configure_downloads("http://www.purplekarrot.net/boost/${BOOST_VERSION}/" ALL ADD_REMOVE)
+cpack_configure_downloads("http://www.purplekarrot.net/boost/${BOOST_VERSION}/" ALL ADD_REMOVE)
