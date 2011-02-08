@@ -1,12 +1,12 @@
 
-find_package(Subversion REQUIRED)
-
 function(boost_get_module_svn name url rev)
   message(STATUS "TODO: svn checkout module")
 endfunction(boost_get_module_svn)
 
 function(boost_get_module_svn2 name url rev)
 
+  find_package(Subversion REQUIRED)
+  
   set(svn_user_pw_args "")
   if(svn_username)
     set(svn_user_pw_args ${svn_user_pw_args} "--username=${svn_username}")

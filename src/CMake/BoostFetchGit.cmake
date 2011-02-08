@@ -1,8 +1,8 @@
 
-find_package(Git REQUIRED)
-
 function(boost_fetch_git name destination)
   cmake_parse_arguments(GIT "" "URL;TAG" "" ${ARGN})
+
+  find_package(Git REQUIRED)
 
 #  if(EXISTS "${destination}/${name}/.git")
 #    execute_process(

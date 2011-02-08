@@ -18,15 +18,7 @@ endif(MSVC)
 file(GLOB_RECURSE headers ${CMAKE_CURRENT_SOURCE_DIR}/boost/*.?pp)
 boost_add_headers(${headers})
 
-macro(forward_file from to)
-  if(NOT EXISTS ${to})
-    get_filename_component(to_path ${to} PATH)
-    file(RELATIVE_PATH include "${to_path}" ${from})
-    file(WRITE ${to} "#include \"${include}\"\n")
-  endif()
-endmacro(forward_file)
-
-forward_file(
+boost_forward_file(
   ${CMAKE_CURRENT_SOURCE_DIR}/../detail/utf8_codecvt_facet.cpp
   ${CMAKE_CURRENT_BINARY_DIR}/include/libs/detail/utf8_codecvt_facet.cpp
   )
