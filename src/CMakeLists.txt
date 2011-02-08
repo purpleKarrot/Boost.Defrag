@@ -15,8 +15,6 @@ set(branch "stable") # or testing, unstable?
 # global constants
 set(BOOST_MONOLITHIC_ROOT ${Boost_BINARY_DIR}/${branch}-source)
 set(BOOST_MODULES_DIR     ${BOOST_MONOLITHIC_ROOT}/src)
-set(BOOST_INCLUDE_DIR     ${BOOST_MONOLITHIC_ROOT}/include)
-include_directories(${BOOST_INCLUDE_DIR})
 
 # 
 set(CPACK_SOURCE_INSTALLED_DIRECTORIES
