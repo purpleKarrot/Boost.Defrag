@@ -102,6 +102,8 @@ enable_testing()
 # TODO?: create multiple build dirs with different configs when using makefiles
 add_subdirectory(src)
 
+OPTION( ENABLE_EXAMPLES "Enable building of examples." OFF )
+
 ##########################################################################
 # Packaging                                                              #
 ##########################################################################
