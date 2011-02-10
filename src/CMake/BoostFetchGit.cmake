@@ -15,7 +15,7 @@ function(boost_fetch_git name destination)
   file(REMOVE_RECURSE "${destination}/${name}")
   message(STATUS "${name}: cloning git repository: '${GIT_URL}'")
   execute_process(
-    COMMAND "${git_EXECUTABLE}" clone "${GIT_URL}" "${name}"
+    COMMAND ${GIT_EXECUTABLE} clone ${GIT_URL} ${name}
     WORKING_DIRECTORY "${destination}"
     RESULT_VARIABLE error_code
     )
@@ -24,9 +24,9 @@ function(boost_fetch_git name destination)
   endif()
 
   execute_process(
-    COMMAND "${git_EXECUTABLE}" checkout "${GIT_TAG}"
-    COMMAND "${git_EXECUTABLE}" submodule init
-    COMMAND "${git_EXECUTABLE}" submodule update --recursive
+    COMMAND "${GIT_EXECUTABLE}" checkout "${GIT_TAG}"
+    COMMAND "${GIT_EXECUTABLE}" submodule init
+    COMMAND "${GIT_EXECUTABLE}" submodule update --recursive
     WORKING_DIRECTORY "${destination}/${name}"
     RESULT_VARIABLE error_code
     )
