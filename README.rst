@@ -1,11 +1,13 @@
 Boost.CMake is an approach to a modularized build of the `Boost C++ Libraries <http://www.boost.org/>`_ with `CMake <http://cmake.org/>`_.
 
-This fork will eventually include modules for:
+This fork includes modules for:
     * Boost.Context
     * Boost.Fiber
+    * Boost.Move
+
+This fork will eventually include modules for:
     * Boost.Atomic
     * Boost.Lockfree
-    * Boost.Move
     * Boost.Task
     * Boost.Tasklets
 
