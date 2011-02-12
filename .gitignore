@@ -1,4 +1,3 @@
-CMakeCache.back.txt
 Testing/
 bin/
 cmake_install.cmake
@@ -19,3 +18,9 @@ src/context_provided/
 src/provided/context_provided/
 stable-binary/
 stable-source/
+CMakeCache.txt
+CMakeFiles
+CPackConfig.cmake
+CPackSourceConfig.cmake
+CTestTestfile.cmake
+Makefile
