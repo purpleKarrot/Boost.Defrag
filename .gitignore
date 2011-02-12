@@ -1,9 +1,5 @@
-CMakeCache.txt
-CMakeFiles/
-CPackConfig.cmake
-CPackSourceConfig.cmake
-CTestTestfile.cmake
-Makefile
+CMakeCache.back.txt
+Testing/
 bin/
 cmake_install.cmake
 downloads/
@@ -12,9 +8,14 @@ lib/
 pristine_boost/
 resources/
 src/.CMakeLists.txt.swp
+src/.CMakeLists.txt.swn
+src/CMake/.BoostFetchGit.cmake.swp
+src/CMake/.BoostModule.cmake.swp
 src/CMakeFiles/
 src/CTestTestfile.cmake
 src/Makefile
 src/cmake_install.cmake
+src/context_provided/
+src/provided/context_provided/
 stable-binary/
 stable-source/
