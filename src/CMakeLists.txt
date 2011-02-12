@@ -8,7 +8,7 @@
 #   http://www.boost.org/LICENSE_1_0.txt                                 #
 ##########################################################################
 
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/CMake)
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/CMake)
 
 set(branch "stable") # or testing, unstable?
 
@@ -42,7 +42,7 @@ file(MAKE_DIRECTORY "${BOOST_MODULES_DIR}")
 
 set(BOOST_MODULE_LIST)
 
-file(GLOB_RECURSE modules "modules/*.cmake")
+file(GLOB_RECURSE modules "${CMAKE_SOURCE_DIR}/fragments/*.cmake")
 foreach(module ${modules})
   include(${module})
 endforeach(module)
@@ -98,7 +98,7 @@ endif(BOOST_UPDATE_SOURCE OR NOT DEFINED BOOST_UPDATE_SOURCE)
 
 # TODO: remove this once all modules provide their own CMakeLists.txt file
 execute_process(COMMAND ${CMAKE_COMMAND} -E copy_directory
-  ${CMAKE_CURRENT_SOURCE_DIR}/provided ${BOOST_MODULES_DIR}
+  ${CMAKE_SOURCE_DIR}/provided ${BOOST_MODULES_DIR}
   )
 
 add_subdirectory(
