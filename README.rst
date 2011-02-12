@@ -1,15 +1,16 @@
 Boost.CMake is an approach to a modularized build of the `Boost C++ Libraries <http://www.boost.org/>`_ with `CMake <http://cmake.org/>`_.
 
 This fork includes modules for:
+    * Boost.Atomic
     * Boost.Context
-    * Boost.Fiber
     * Boost.Move
+    * Boost.Fiber
+    * Boost.Tasklets
+    * Boost.IDL
 
 This fork will eventually include modules for:
-    * Boost.Atomic
     * Boost.Lockfree
     * Boost.Task
-    * Boost.Tasklets
 
 I would like to turn these modules into CMake 'options' that are off by default so that this fork
 can be merged back into purpleKarrot's sources.  
