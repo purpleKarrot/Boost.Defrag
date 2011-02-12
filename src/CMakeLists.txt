@@ -42,7 +42,14 @@ file(MAKE_DIRECTORY "${BOOST_MODULES_DIR}")
 
 set(BOOST_MODULE_LIST)
 
-file(GLOB_RECURSE modules "${CMAKE_SOURCE_DIR}/fragments/*.cmake")
+set(fragments_expression "${CMAKE_SOURCE_DIR}/fragments/boost/*.cmake")
+
+option(BOOST_INCLUDE_INCUBATING "Should incubating components be included?" OFF)
+if(BOOST_INCLUDE_INCUBATING)
+  list(APPEND fragments_expression "${CMAKE_SOURCE_DIR}/fragments/incubating/*.cmake")
+endif(BOOST_INCLUDE_INCUBATING)
+
+file(GLOB_RECURSE modules ${fragments_expression})
 foreach(module ${modules})
   include(${module})
 endforeach(module)
