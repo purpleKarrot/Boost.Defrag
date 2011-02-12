@@ -31,7 +31,6 @@ include(BoostFetchDownload)
 include(BoostFetchPristineBoost)
 
 file(COPY
-  ${Boost_SOURCE_DIR}/CMake
   ${Boost_SOURCE_DIR}/resources
   ${Boost_SOURCE_DIR}/CMakeLists.txt
   ${Boost_SOURCE_DIR}/LICENSE_1_0.txt

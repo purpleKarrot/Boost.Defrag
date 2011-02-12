@@ -202,8 +202,9 @@ set(QUICKBOOK_EXECUTABLE quickbook)
 unset(BOOST_PROJECTS_ALL CACHE)
 
 ##########################################################################
+
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules)
 @BOOST_MODULE_ADD_SUBDIRECTORIES@
-add_subdirectory(cmake)
 
 ##########################################################################
 

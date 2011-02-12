@@ -11,9 +11,6 @@
 cmake_minimum_required(VERSION 2.8.3 FATAL_ERROR)
 project(Boost)
 
-# Boost CMake modules
-list(APPEND CMAKE_MODULE_PATH ${Boost_SOURCE_DIR}/CMake)
-
 ##########################################################################
 # Version and Package Information                                        #
 ##########################################################################
