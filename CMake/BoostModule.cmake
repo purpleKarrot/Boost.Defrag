@@ -13,7 +13,7 @@ include(CMakeParseArguments)
 #TODO: Finish this documentation
 # Defines dependencies and origin of a boost module. Use as:
 #
-#   boost_module(libname
+#   boost_fragment(libname
 #     DOWNLOAD
 #       URL http://host.tld/libname-01.tgz
 #       MD5 d41d8cd98f00b204e9800998ecf8427e
@@ -21,22 +21,23 @@ include(CMakeParseArguments)
 #       config
 #     )
 #
-function(boost_module name)
-  set(options    "PROPOSED;TOOL")
-  set(parameters "STABLE;UNSTABLE")
-  cmake_parse_arguments(MODULE "${options}" "" "${parameters}" ${ARGN})
+function(boost_fragment name)
+  set(stages "STABLE;UNSTABLE")
+  cmake_parse_arguments(FRAG "" "" "${stages}" ${ARGN})
 
-  if(NOT MODULE_STABLE)
-    set(MODULE_STABLE ${MODULE_UNPARSED_ARGUMENTS})
-  endif()
+  foreach(stage ${stages})
+    set(variable BOOST_${name}_${stage})
+    if(FRAG_${stage})
+      set(${variable} ${FRAG_${stage}} PARENT_SCOPE)
+    else()
+      set(${variable} ${FRAG_UNPARSED_ARGUMENTS} PARENT_SCOPE)
+    endif()
+  endforeach(stage)
 
-  if(NOT MODULE_TESTING)
-    set(MODULE_TESTING ${MODULE_UNPARSED_ARGUMENTS})
-  endif()
+  set(BOOST_FRAGMENT_LIST ${BOOST_FRAGMENT_LIST} ${name} PARENT_SCOPE)
+endfunction(boost_fragment)
 
-  foreach(param ${options} ${parameters})
-    set(BOOST_${name}_${param} ${MODULE_${param}} PARENT_SCOPE)
-  endforeach(param)
-
-  set(BOOST_MODULE_LIST ${BOOST_MODULE_LIST} ${name} PARENT_SCOPE)
-endfunction(boost_module)
+## backwards compatibility
+macro(boost_module)
+  boost_fragment(${ARGN})
+endmacro(boost_module)
