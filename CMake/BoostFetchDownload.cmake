@@ -24,6 +24,11 @@ function(boost_fetch_download name destination)
     message(FATAL_ERROR "downloading '${remote}' failed: '${status_string}'")
   endif()
 
+  # 
+  if(EXISTS "${destdir}" AND NOT "${archive}" IS_NEWER_THAN "${destdir}")
+    return()
+  endif()
+
   # Extract it
   file(MAKE_DIRECTORY "${tempdir}")
   execute_process(COMMAND ${CMAKE_COMMAND} -E tar xfz ${archive}

@@ -8,7 +8,7 @@
 #   http://www.boost.org/LICENSE_1_0.txt                                 #
 ##########################################################################
 
-cmake_minimum_required(VERSION 2.8.3 FATAL_ERROR)
+cmake_minimum_required(VERSION 2.8.2 FATAL_ERROR)
 project(Boost)
 
 ##########################################################################
@@ -18,6 +18,7 @@ project(Boost)
 set(BOOST_VERSION_MAJOR 1)
 set(BOOST_VERSION_MINOR 45)
 set(BOOST_VERSION_PATCH 0)
+set(BOOST_VERSION_TWEAK 0)
 
 set(BOOST_VERSION "${BOOST_VERSION_MAJOR}.${BOOST_VERSION_MINOR}")
 if(BOOST_VERSION_PATCH GREATER 0)
