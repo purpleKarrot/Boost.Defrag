@@ -8,7 +8,36 @@
 #   http://www.boost.org/LICENSE_1_0.txt                                 #
 ##########################################################################
 
-include(CheckCXXSourceCompiles)
+cmake_minimum_required(VERSION 2.8.2 FATAL_ERROR)
+project(Boost)
+
+list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/modules")
+
+##########################################################################
+# Version Information                                                    #
+##########################################################################
+
+set(BOOST_VERSION_MAJOR 1  CACHE INTERNAL "")
+set(BOOST_VERSION_MINOR 45 CACHE INTERNAL "")
+set(BOOST_VERSION_PATCH 0  CACHE INTERNAL "")
+set(BOOST_VERSION_TWEAK 0  CACHE INTERNAL "")
+
+set(BOOST_VERSION "${BOOST_VERSION_MAJOR}.${BOOST_VERSION_MINOR}")
+if(BOOST_VERSION_PATCH GREATER 0)
+  set(BOOST_VERSION "${BOOST_VERSION}.${BOOST_VERSION_PATCH}")
+endif(BOOST_VERSION_PATCH GREATER 0)
+set(BOOST_VERSION "${BOOST_VERSION}" CACHE INTERNAL "")
+
+# make universal binaries on OS X
+set(CMAKE_OSX_ARCHITECTURES "i386;x86_64" CACHE STRING "Architectures for OS X")
+
+##########################################################################
+# Building and Testing                                                   #
+##########################################################################
+
+enable_testing()
+#include(CheckCXXSourceCompiles)
+
 
 # set CMAKE_THREAD_PREFER_PTHREAD if you prefer pthread on windows
 find_package(Threads)
@@ -18,12 +47,8 @@ find_package(Threads)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 if(MSVC)
-  add_definitions(
-    -D_CRT_SECURE_NO_WARNINGS
-    -D_SCL_SECURE_NO_WARNINGS
-    )
+  add_definitions(-D_CRT_SECURE_NO_WARNINGS -D_SCL_SECURE_NO_WARNINGS)
 endif()
-
 
 # Put the libaries and binaries that get built into directories at the
 # top of the build tree rather than in hard-to-find leaf
@@ -62,56 +87,6 @@ elseif(UNIX)
   set(MULTI_THREADED_LINK_FLAGS "-lpthread -lrt")
 endif()
 
-# TODO: make this an option
-set(BUILD_MULTI_THREADED ON)
-
-# Toolset detection.
-if (NOT BOOST_TOOLSET)
-  if (MSVC60)
-    set(BOOST_TOOLSET "vc6")
-  elseif(MSVC70)
-    set(BOOST_TOOLSET "vc7")
-  elseif(MSVC71)
-    set(BOOST_TOOLSET "vc71")
-  elseif(MSVC80)
-    set(BOOST_TOOLSET "vc80")
-  elseif(MSVC90)
-    set(BOOST_TOOLSET "vc90")
-  elseif(MSVC10)
-    set(BOOST_TOOLSET "vc100")
-  elseif(MSVC)
-    set(BOOST_TOOLSET "vc")
-  elseif(BORLAND)
-    set(BOOST_TOOLSET "bcb")
-  elseif(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
-    # Execute GCC with the -dumpversion option, to give us a version string
-    execute_process(
-      COMMAND ${CMAKE_CXX_COMPILER} "-dumpversion" 
-      OUTPUT_VARIABLE GCC_VERSION_STRING)
-    
-    # Match only the major and minor versions of the version string
-    string(REGEX MATCH "[0-9]+.[0-9]+" GCC_MAJOR_MINOR_VERSION_STRING
-      "${GCC_VERSION_STRING}")
-
-    # Strip out the period between the major and minor versions
-    string(REGEX REPLACE "\\." "" BOOST_VERSIONING_GCC_VERSION
-      "${GCC_MAJOR_MINOR_VERSION_STRING}")
-    
-    # Set the GCC versioning toolset
-    set(BOOST_TOOLSET "gcc${BOOST_VERSIONING_GCC_VERSION}")
-  elseif(CMAKE_CXX_COMPILER MATCHES "/icpc$" 
-      OR CMAKE_CXX_COMPILER MATCHES "/icpc.exe$" 
-      OR CMAKE_CXX_COMPILER MATCHES "/icl.exe$")
-    set(BOOST_TOOLSET "intel")
-  else()
-    set(BOOST_TOOLSET "unknown")
-  endif()
-  
-  # create cache entry
-  set(BOOST_TOOLSET ${BOOST_TOOLSET} CACHE STRING "Boost toolset")
-  message(STATUS "Boost toolset: ${BOOST_TOOLSET}")
-endif (NOT BOOST_TOOLSET)
-
 
 # Limit CMAKE_CONFIGURATION_TYPES to Debug and Release
 #set(config_types "Debug;Release")
@@ -143,53 +118,6 @@ else(CMAKE_CONFIGURATION_TYPES)
   endif (NOT CMAKE_BUILD_TYPE)
 endif(CMAKE_CONFIGURATION_TYPES)
 
-
-# Set the build name 
-# set(BUILDNAME "${BOOST_COMPILER}-${BOOST_COMPILER_VERSION}-${BOOST_PLATFORM}")
-# boost_report_pretty("Build name" BUILDNAME)
-
-
-# Append the Boost version number to the versioned name
-set(boost_version "${BOOST_VERSION_MAJOR}_${BOOST_VERSION_MINOR}")
-if(BOOST_VERSION_SUBMINOR GREATER 0)
-  set(boost_version "${boost_version}_${BOOST_VERSION_SUBMINOR}")
-endif(BOOST_VERSION_SUBMINOR GREATER 0)
-
-# The versioned name starts with the full Boost toolset
-if(WIN32)
-  set(tag_toolset "-${BOOST_TOOLSET}")
-  set(tag_version "-${boost_version}")
-else(WIN32)
-  set(tag_toolset "")
-  set(tag_version "")
-endif(WIN32)
-
-# Add -mt for multi-threaded libraries
-if(BUILD_MULTI_THREADED)
-  set(tag_mt "-mt")
-else(BUILD_MULTI_THREADED)
-  set(tag_mt "")
-endif(BUILD_MULTI_THREADED)
-
-# Using the debug version of the runtime library.
-# With Visual C++, this comes automatically with debug
-if(MSVC)
-  set(tag_rtdebug "g")
-else(MSVC)
-  set(tag_rtdebug "")
-endif(MSVC)
-
-# TODO: python debug
-set(tag_pydebug "y")
-
-# CMAKE_<CONFIG>_POSTFIX
-set(CMAKE_DEBUG_POSTFIX   "${tag_toolset}${tag_mt}-${tag_rtdebug}d${tag_version}")
-set(CMAKE_RELEASE_POSTFIX "${tag_toolset}${tag_mt}${tag_version}")
-
-# Linking statically to the runtime library
-set(CMAKE_DEBUGSTATICRUNTIME_POSTFIX   "${tag_toolset}${tag_mt}-s${tag_rtdebug}d${tag_version}")
-set(CMAKE_RELEASESTATICRUNTIME_POSTFIX "${tag_toolset}${tag_mt}-s${tag_version}")
-
 #set(CMAKE_SHARED_LIBRARY_PREFIX libboost_)
 #set(CMAKE_STATIC_LIBRARY_PREFIX libboost_)
 
@@ -202,10 +130,6 @@ set(QUICKBOOK_EXECUTABLE quickbook)
 unset(BOOST_PROJECTS_ALL CACHE)
 
 ##########################################################################
-
-set(_BOOST_MONOLITHIC_BUILD ON CACHE INTERNAL
-  "Do NOT use installed Boost headers and libraries." FORCE)
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules)
 @BOOST_MODULE_ADD_SUBDIRECTORIES@
 
 ##########################################################################
@@ -293,5 +217,13 @@ foreach(project ${BOOST_PROJECTS_ALL})
   endif(has_dev)
 endforeach(project)
 
-# make it global
-set(CPACK_COMPONENTS_ALL ${CPACK_COMPONENTS_ALL} CACHE INTERNAL "" FORCE)
+list(INSERT BOOST_FOOTER 0
+  "${PROJECT_SOURCE_DIR}/BoostCPack.cmake"
+  CPack
+  )
+
+foreach(file ${BOOST_FOOTER})
+  include("${file}")
+endforeach(file)
+
+cpack_configure_downloads("http://www.purplekarrot.net/boost/${BOOST_VERSION}/" ALL ADD_REMOVE)

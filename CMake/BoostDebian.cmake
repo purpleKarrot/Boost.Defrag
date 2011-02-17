@@ -28,7 +28,7 @@ foreach(LINE ${DESC_LINES})
   set(DEB_LONG_DESCRIPTION "${DEB_LONG_DESCRIPTION} ${LINE}\n")
 endforeach(LINE)
 
-set(debian_dir ${BOOST_MONOLITHIC_ROOT}/debian)
+set(debian_dir "${BOOST_MONOLITHIC_DIR}/debian")
 
 ################################################################################
 # debian/control
