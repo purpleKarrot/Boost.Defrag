@@ -33,12 +33,18 @@ endif()
 
 include_directories(${MPI_INCLUDE_PATH})
 
+if(BOOST_DEBIAN_PACKAGES)
+  set(mpi_library openmpi)
+else()
+  set(mpi_library mpi)
+endif()
+
 boost_add_library(graph_parallel
   SOURCES
     src/mpi_process_group.cpp
     src/tag_allocator.cpp
   LINK_BOOST_LIBRARIES
-    mpi
+    ${mpi_library}
   LINK_LIBRARIES
     ${MPI_LIBRARIES}
   # <define>BOOST_GRAPH_NO_LIB=1

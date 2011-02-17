@@ -116,6 +116,11 @@ add_subdirectory(
   )
 
 if(NOT WIN32)
-  set(CPACK_DEBIAN_BUILD_DEPENDS doxygen dblatex xsltproc docbook-xml docbook-xsl)
+  set(CPACK_DEBIAN_BUILD_DEPENDS
+    doxygen dblatex xsltproc docbook-xml docbook-xsl # needed for documentation
+    libmpich2-dev libopenmpi-dev                     # Boost.MPI
+    python-dev                                       # Boost.Python
+    zlib1g-dev libbz2-dev                            # Boost.Iostreams
+    )
   include(BoostDebian)
 endif(NOT WIN32)

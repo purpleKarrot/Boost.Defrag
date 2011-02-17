@@ -92,7 +92,7 @@ file(WRITE ${debian_rules}
   "\n"
   "build:\n"
   "	cmake -E make_directory $(BUILDDIR)\n"
-  "	cd $(BUILDDIR); cmake ..\n"
+  "	cd $(BUILDDIR); cmake -DCMAKE_INSTALL_PREFIX=/usr -DBOOST_DEBIAN_PACKAGES=TRUE ..\n"
   "	make -C $(BUILDDIR) preinstall\n"
   "	touch build\n"
   "\n"

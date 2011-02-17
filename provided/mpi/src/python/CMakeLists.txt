@@ -12,7 +12,7 @@ boost_add_library(${boost_mpi_name}_python
     python
   )
 
-boost_add_python_extension(mpi
+boost_add_python_extension(${boost_mpi_name}
   SOURCES
     collectives.cpp
     py_communicator.cpp
