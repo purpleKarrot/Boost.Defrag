@@ -203,6 +203,8 @@ unset(BOOST_PROJECTS_ALL CACHE)
 
 ##########################################################################
 
+set(_BOOST_MONOLITHIC_BUILD ON CACHE INTERNAL
+  "Do NOT use installed Boost headers and libraries." FORCE)
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules)
 @BOOST_MODULE_ADD_SUBDIRECTORIES@
 

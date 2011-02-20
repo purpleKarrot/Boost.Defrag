@@ -10,10 +10,13 @@
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/CMake)
 
-set(branch "stable") # or testing, unstable?
+# a dropdown in the CMake GUI would be really cool
+if(NOT BOOST_STAGE MATCHES "^STABLE$|^UNSTABLE$")
+  set(BOOST_STAGE "STABLE" CACHE STRING "Possible values are STABLE and UNSTABLE" FORCE)
+endif()
 
 # global constants
-set(BOOST_MONOLITHIC_ROOT ${Boost_BINARY_DIR}/${branch}-source)
+set(BOOST_MONOLITHIC_ROOT ${Boost_BINARY_DIR}/monolithic)
 set(BOOST_MODULES_DIR     ${BOOST_MONOLITHIC_ROOT}/src)
 
 # 
@@ -39,7 +42,7 @@ file(COPY
 
 file(MAKE_DIRECTORY "${BOOST_MODULES_DIR}")
 
-set(BOOST_MODULE_LIST)
+set(BOOST_FRAGMENT_LIST)
 
 set(fragments_expression "${CMAKE_SOURCE_DIR}/fragments/boost/*.cmake")
 
@@ -53,22 +56,22 @@ foreach(module ${modules})
   include(${module})
 endforeach(module)
 
-list(SORT BOOST_MODULE_LIST)
+list(SORT BOOST_FRAGMENT_LIST)
 set(BOOST_MODULE_ADD_SUBDIRECTORIES)
 
-foreach(module ${BOOST_MODULE_LIST})
+foreach(fragment ${BOOST_FRAGMENT_LIST})
   set(BOOST_MODULE_ADD_SUBDIRECTORIES
-    "${BOOST_MODULE_ADD_SUBDIRECTORIES}\nadd_subdirectory(${module})")
+    "${BOOST_MODULE_ADD_SUBDIRECTORIES}\nadd_subdirectory(${fragment})")
 
-  # fetch the module
-  set(stable_source "${BOOST_${module}_STABLE}")
-  list(GET stable_source 0 service)
-  list(REMOVE_AT stable_source 0)
+  # fetch the fragment
+  set(source "${BOOST_${fragment}_${BOOST_STAGE}}")
+  list(GET source 0 service)
+  list(REMOVE_AT source 0)
 
-  message(STATUS "fetching '${module}' via ${service}.")
+  message(STATUS "fetching '${fragment}' via ${service}.")
 
   # prepare arguments for boost_fetch_* functions
-  set(args ${module} ${BOOST_MODULES_DIR} ${stable_source})
+  set(args ${fragment} ${BOOST_MODULES_DIR} ${source})
 
   if(service STREQUAL "DOWNLOAD")
     boost_fetch_download(${args})
@@ -81,7 +84,7 @@ foreach(module ${BOOST_MODULE_LIST})
   else()
     message(FATAL_ERROR "no service for ${name} given!")
   endif()
-endforeach(module)
+endforeach(fragment)
 
 #if(CMAKE_HOST_WIN32)
 #  boost_fetch_download(docbook_xml "${CMAKE_BINARY_DIR}"
@@ -108,8 +111,8 @@ execute_process(COMMAND ${CMAKE_COMMAND} -E copy_directory
   )
 
 add_subdirectory(
-  ${Boost_BINARY_DIR}/${branch}-source/src
-  ${Boost_BINARY_DIR}/${branch}-binary
+  ${Boost_BINARY_DIR}/monolithic/src
+  ${Boost_BINARY_DIR}/monolithic-build
   )
 
 if(NOT WIN32)

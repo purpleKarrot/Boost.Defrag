@@ -39,7 +39,7 @@ boost_add_library(wave
 
 boost_add_executable(wave
   SOURCES
-    tools/wave/cpp.cpp
+    cpp.cpp
   LINK_BOOST_LIBRARIES
     wave
     program_options

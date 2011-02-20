@@ -5,5 +5,4 @@ boost_module(wave
   COPY_FROM_PRISTINE_BOOST
     boost/wave
     boost/wave.hpp
-    tools/wave
   )

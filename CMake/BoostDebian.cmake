@@ -140,10 +140,38 @@ file(WRITE ${debian_dir}/source/format "3.0 (native)")
 ################################################################################
 # debian/changelog
 set(debian_changelog ${debian_dir}/changelog)
-execute_process(COMMAND date +"%a, %d %b %Y %H:%M:%S %z" OUTPUT_VARIABLE DATE_TIME)
+execute_process(COMMAND date -R OUTPUT_VARIABLE DATE_TIME)
+#execute_process(COMMAND date +"%a, %d %b %Y %H:%M:%S %z" OUTPUT_VARIABLE DATE_TIME)
 execute_process(COMMAND date +%y%m%d%H%M OUTPUT_VARIABLE suffix OUTPUT_STRIP_TRAILING_WHITESPACE)
 file(WRITE ${debian_changelog}
-  "${CPACK_DEBIAN_PACKAGE_NAME} (${BOOST_VERSION}-${suffix}) natty; urgency=low\n\n"
+  "${CPACK_DEBIAN_PACKAGE_NAME} (${BOOST_VERSION}-${suffix}) maverick; urgency=low\n\n"
   "  * Package built with CMake\n\n"
   " -- ${CPACK_PACKAGE_CONTACT}  ${DATE_TIME}"
+  )
+
+##############################################################################
+# upload package to PPA
+
+find_program(DPKG_BUILDPACKAGE dpkg-buildpackage)
+find_program(DPUT dput)
+
+if(NOT DPKG_BUILDPACKAGE OR NOT DPUT)
+  return()
+endif()
+
+set(changes_file
+  "${CPACK_DEBIAN_PACKAGE_NAME}_${BOOST_VERSION}-${suffix}_source.changes"
+  )
+
+# TODO: the monolithic source directory might contain '.git', '.svn', etc
+
+add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/${changes_file}
+  COMMAND ${DPKG_BUILDPACKAGE} -S
+  WORKING_DIRECTORY ${BOOST_MONOLITHIC_ROOT}
+  )
+
+add_custom_target(deploy
+  ${DPUT} "ppa:purplekarrot/ppa" ${changes_file}
+  DEPENDS ${CMAKE_BINARY_DIR}/${changes_file}
+  WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
   )
