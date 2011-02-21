@@ -24,3 +24,5 @@ CPackConfig.cmake
 CPackSourceConfig.cmake
 CTestTestfile.cmake
 Makefile
+
+monolithic
