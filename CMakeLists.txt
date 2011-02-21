@@ -77,12 +77,10 @@ if(BOOST_UPDATE_SOURCE OR NOT DEFINED BOOST_UPDATE_SOURCE)
     "${BOOST_MONOLITHIC_DIR}/CMakeLists.txt" @ONLY)
 
   file(COPY
-    BoostConfig.cmake.in
-    BoostConfigVersion.cmake.in
     BoostCPack.cmake
     CTestConfig.cmake
     LICENSE_1_0.txt
-    README.rst
+    README.txt
     DESTINATION ${BOOST_MONOLITHIC_DIR}
     )
 
@@ -96,7 +94,7 @@ execute_process(COMMAND ${CMAKE_COMMAND} -E copy_directory
 
 if(NOT WIN32)
   set(CPACK_DEBIAN_BUILD_DEPENDS
-    doxygen dblatex xsltproc     # needed for documentation
+    doxygen xsltproc #dblatex    # needed for documentation
     docbook-xml docbook-xsl      # Boost.BoostBook
     libmpich2-dev libopenmpi-dev # Boost.MPI
     python-dev                   # Boost.Python

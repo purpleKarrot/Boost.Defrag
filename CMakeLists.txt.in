@@ -22,6 +22,7 @@ set(BOOST_CONFIG_VERSION "1.45")
 
 file(WRITE "${PROJECT_BINARY_DIR}/BoostConfigVersion.cmake"
   "set(PACKAGE_VERSION \"${BOOST_CONFIG_VERSION}\")\n"
+  "set(PACKAGE_VERSION_EXACT TRUE)\n"
   )
 
 file(WRITE "${PROJECT_BINARY_DIR}/BoostConfig.cmake"
@@ -30,10 +31,12 @@ file(WRITE "${PROJECT_BINARY_DIR}/BoostConfig.cmake"
   "set(Boost_LIBRARY_DIRS \"${PROJECT_BINARY_DIR}/lib\")\n"
   "set(Boost_MODULE_PATH \"${PROJECT_SOURCE_DIR}/cmake/modules\")\n"
   "set(Boost_USE_FILE \"\${Boost_MODULE_PATH}/UseBoost.cmake\")\n"
+  "set(Boost_DEV_FILE \"\${Boost_MODULE_PATH}/UseBoostDev.cmake\")\n"
   )
 
 set(Boost_DIR ${PROJECT_BINARY_DIR} CACHE PATH "")
-find_package(Boost "1.45.5" NO_MODULE)
+find_package(Boost NO_MODULE)
+include("${Boost_DEV_FILE}")
 
 ##########################################################################
 # Building and Testing                                                   #
@@ -139,7 +142,7 @@ list(SORT BOOST_PROJECTS_ALL)
 # function to set CPACK_COMPONENT_* globally
 function(set_cpack_component name value)
   string(TOUPPER "CPACK_COMPONENT_${name}" variable)
-  set(${variable} ${value})
+  set(${variable} ${value} PARENT_SCOPE)
 endfunction(set_cpack_component)
 
 set(CPACK_COMPONENTS_ALL)
@@ -169,7 +172,7 @@ foreach(project ${BOOST_PROJECTS_ALL})
   set_cpack_component(${project}_EXE_DESCRIPTION "${description}")
 
   # Debian
-  string(REPLACE "_" "-" debian_name "${project}${BOOST_VERSION}")
+  string(REPLACE "_" "-" debian_name "${project}${Boost_VERSION}")
   set_cpack_component(${project}_LIB_DEB_PACKAGE "libboost-${debian_name}")
   set_cpack_component(${project}_DEV_DEB_PACKAGE "libboost-${debian_name}-dev")
   set_cpack_component(${project}_EXE_DEB_PACKAGE "boost-${debian_name}")
