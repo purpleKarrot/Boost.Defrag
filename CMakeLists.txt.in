@@ -11,32 +11,35 @@
 cmake_minimum_required(VERSION 2.8.2 FATAL_ERROR)
 project(Boost)
 
-list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/modules")
-
-##########################################################################
-# Version Information                                                    #
-##########################################################################
-
-set(BOOST_VERSION_MAJOR 1  CACHE INTERNAL "")
-set(BOOST_VERSION_MINOR 45 CACHE INTERNAL "")
-set(BOOST_VERSION_PATCH 0  CACHE INTERNAL "")
-set(BOOST_VERSION_TWEAK 0  CACHE INTERNAL "")
-
-set(BOOST_VERSION "${BOOST_VERSION_MAJOR}.${BOOST_VERSION_MINOR}")
-if(BOOST_VERSION_PATCH GREATER 0)
-  set(BOOST_VERSION "${BOOST_VERSION}.${BOOST_VERSION_PATCH}")
-endif(BOOST_VERSION_PATCH GREATER 0)
-set(BOOST_VERSION "${BOOST_VERSION}" CACHE INTERNAL "")
-
 # make universal binaries on OS X
 set(CMAKE_OSX_ARCHITECTURES "i386;x86_64" CACHE STRING "Architectures for OS X")
+
+##########################################################################
+# Config Information                                                     #
+##########################################################################
+
+set(BOOST_CONFIG_VERSION "1.45")
+
+file(WRITE "${PROJECT_BINARY_DIR}/BoostConfigVersion.cmake"
+  "set(PACKAGE_VERSION \"${BOOST_CONFIG_VERSION}\")\n"
+  )
+
+file(WRITE "${PROJECT_BINARY_DIR}/BoostConfig.cmake"
+  "set(Boost_FOUND TRUE)\n"
+  "set(Boost_INCLUDE_DIRS \"${PROJECT_BINARY_DIR}/include\")\n"
+  "set(Boost_LIBRARY_DIRS \"${PROJECT_BINARY_DIR}/lib\")\n"
+  "set(Boost_MODULE_PATH \"${PROJECT_SOURCE_DIR}/cmake/modules\")\n"
+  "set(Boost_USE_FILE \"\${Boost_MODULE_PATH}/UseBoost.cmake\")\n"
+  )
+
+set(Boost_DIR ${PROJECT_BINARY_DIR} CACHE PATH "")
+find_package(Boost "1.45.5" NO_MODULE)
 
 ##########################################################################
 # Building and Testing                                                   #
 ##########################################################################
 
 enable_testing()
-#include(CheckCXXSourceCompiles)
 
 
 # set CMAKE_THREAD_PREFER_PTHREAD if you prefer pthread on windows
@@ -54,13 +57,9 @@ endif()
 # top of the build tree rather than in hard-to-find leaf
 # directories. This simplifies manual testing and the use of the build
 # tree rather than installed Boost libraries.
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
-
-
-# Always include the directory where Boost's include files will be.
-include_directories(${CMAKE_BINARY_DIR}/include)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
 
 
 # Multi-threading support
@@ -121,13 +120,13 @@ endif(CMAKE_CONFIGURATION_TYPES)
 #set(CMAKE_SHARED_LIBRARY_PREFIX libboost_)
 #set(CMAKE_STATIC_LIBRARY_PREFIX libboost_)
 
-set(BOOSTBOOK_DTD_DIR "${CMAKE_CURRENT_SOURCE_DIR}/boostbook/dtd" CACHE FILEPATH "" FORCE)
-set(BOOSTBOOK_XSL_DIR "${CMAKE_CURRENT_SOURCE_DIR}/boostbook/xsl" CACHE FILEPATH "" FORCE)
+set(BOOSTBOOK_DTD_DIR "${CMAKE_CURRENT_SOURCE_DIR}/boostbook/dtd")
+set(BOOSTBOOK_XSL_DIR "${CMAKE_CURRENT_SOURCE_DIR}/boostbook/xsl")
 
 set(QUICKBOOK_FOUND ON CACHE INTERNAL "" FORCE)
 set(QUICKBOOK_EXECUTABLE quickbook)
 
-unset(BOOST_PROJECTS_ALL CACHE)
+set(BOOST_PROJECTS_ALL)
 
 ##########################################################################
 @BOOST_MODULE_ADD_SUBDIRECTORIES@
@@ -140,10 +139,10 @@ list(SORT BOOST_PROJECTS_ALL)
 # function to set CPACK_COMPONENT_* globally
 function(set_cpack_component name value)
   string(TOUPPER "CPACK_COMPONENT_${name}" variable)
-  set(${variable} ${value} CACHE INTERNAL "" FORCE)
+  set(${variable} ${value})
 endfunction(set_cpack_component)
 
-unset(CPACK_COMPONENTS_ALL CACHE)
+set(CPACK_COMPONENTS_ALL)
 
 foreach(project ${BOOST_PROJECTS_ALL})
   set(has_dev ${BOOST_PROJECT_${project}_HAS_DEV})
