@@ -18,7 +18,7 @@ set(CMAKE_OSX_ARCHITECTURES "i386;x86_64" CACHE STRING "Architectures for OS X")
 # Config Information                                                     #
 ##########################################################################
 
-set(BOOST_CONFIG_VERSION "1.45")
+set(BOOST_CONFIG_VERSION "1.46")
 
 file(WRITE "${PROJECT_BINARY_DIR}/BoostConfigVersion.cmake"
   "set(PACKAGE_VERSION \"${BOOST_CONFIG_VERSION}\")\n"

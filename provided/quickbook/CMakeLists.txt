@@ -36,8 +36,10 @@ boost_add_executable(quickbook
     src/code_snippet.cpp
     src/markups.cpp
     src/syntax_highlight.cpp
-    src/block_grammar.cpp
-    src/phrase_grammar.cpp
+    src/grammar.cpp
+    src/main_grammar.cpp
+    src/block_element_grammar.cpp
+    src/phrase_element_grammar.cpp
     src/doc_info_grammar.cpp
   LINK_BOOST_LIBRARIES
     filesystem
