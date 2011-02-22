@@ -4,7 +4,7 @@
 cmake_minimum_required(VERSION 2.8)
 
 find_package(Boost 1.45 NO_MODULE)
-include("${Boost_USE_FILE}")
+include("${Boost_DEV_FILE}")
 
 boost_project(TR1
   AUTHORS

@@ -27,8 +27,9 @@ file(WRITE "${PROJECT_BINARY_DIR}/BoostConfigVersion.cmake"
 
 file(WRITE "${PROJECT_BINARY_DIR}/BoostConfig.cmake"
   "set(Boost_FOUND TRUE)\n"
-  "set(Boost_INCLUDE_DIRS \"${PROJECT_BINARY_DIR}/include\")\n"
-  "set(Boost_LIBRARY_DIRS \"${PROJECT_BINARY_DIR}/lib\")\n"
+  "set(Boost_INCLUDE_DIRS \"${CMAKE_BINARY_DIR}/include\")\n"
+  "set(Boost_LIBRARY_DIRS \"${CMAKE_BINARY_DIR}/lib\")\n"
+  "set(Boost_RESOURCE_PATH \"${PROJECT_SOURCE_DIR}/cmake/resources\")\n"
   "set(Boost_MODULE_PATH \"${PROJECT_SOURCE_DIR}/cmake/modules\")\n"
   "set(Boost_USE_FILE \"\${Boost_MODULE_PATH}/UseBoost.cmake\")\n"
   "set(Boost_DEV_FILE \"\${Boost_MODULE_PATH}/UseBoostDev.cmake\")\n"
@@ -123,8 +124,8 @@ endif(CMAKE_CONFIGURATION_TYPES)
 #set(CMAKE_SHARED_LIBRARY_PREFIX libboost_)
 #set(CMAKE_STATIC_LIBRARY_PREFIX libboost_)
 
-set(BOOSTBOOK_DTD_DIR "${CMAKE_CURRENT_SOURCE_DIR}/boostbook/dtd")
-set(BOOSTBOOK_XSL_DIR "${CMAKE_CURRENT_SOURCE_DIR}/boostbook/xsl")
+set(BOOSTBOOK_DTD_DIR "${CMAKE_CURRENT_SOURCE_DIR}/boostbook/dtd" CACHE INTERNAL "" FORCE)
+set(BOOSTBOOK_XSL_DIR "${CMAKE_CURRENT_SOURCE_DIR}/boostbook/xsl" CACHE INTERNAL "" FORCE)
 
 set(QUICKBOOK_FOUND ON CACHE INTERNAL "" FORCE)
 set(QUICKBOOK_EXECUTABLE quickbook)
