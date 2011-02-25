@@ -2,5 +2,8 @@
 # See http://www.boost.org/LICENSE_1_0.txt
 
 boost_module(quickbook
-  COPY_FROM_PRISTINE_BOOST
+  STABLE SVN
+    URL http://svn.boost.org/svn/boost/tags/release/Boost_1_46_0/tools/quickbook/
+  UNSTABLE SVN
+    URL http://svn.boost.org/svn/boost/trunk/tools/quickbook/
   )
