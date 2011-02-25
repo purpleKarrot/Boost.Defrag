@@ -182,6 +182,13 @@ foreach(project ${BOOST_PROJECTS_ALL})
   set_cpack_component(${project}_LIB_DEB_PACKAGE "libboost-${debian_name}")
   set_cpack_component(${project}_EXE_DEB_PACKAGE "boost-${debian_name}")
 
+  cmake_parse_arguments(DEB "" "" "DEV;LIB" ${BOOST_PROJECT_${project}_DEBIAN_DEPENDS})
+  list(APPEND CPACK_DEBIAN_BUILD_DEPENDS ${DEB_DEV} ${DEB_UNPARSED_ARGUMENTS})
+
+  set_cpack_component(${project}_DEV_DEBIAN_DEPENDS "${DEB_DEV}")
+  set_cpack_component(${project}_LIB_DEBIAN_DEPENDS "${DEB_LIB}")
+  set_cpack_component(${project}_EXE_DEBIAN_DEPENDS "${DEB_UNPARSED_ARGUMENTS}")
+
   # dependencies
   set(dev_depends)
   set(exe_depends)
@@ -202,9 +209,14 @@ foreach(project ${BOOST_PROJECTS_ALL})
     if(has_lib AND BOOST_PROJECT_${dependancy}_HAS_LIB)
       list(APPEND lib_depends ${dependancy}_lib)
     endif(has_lib AND BOOST_PROJECT_${dependancy}_HAS_LIB)
-    if(has_exe AND BOOST_PROJECT_${dependancy}_HAS_LIB)
-      list(APPEND exe_depends ${dependancy}_lib)
-    endif(has_exe AND BOOST_PROJECT_${dependancy}_HAS_LIB)
+    if(has_exe)
+      if(BOOST_PROJECT_${dependancy}_HAS_LIB)
+        list(APPEND exe_depends ${dependancy}_lib)
+      endif(BOOST_PROJECT_${dependancy}_HAS_LIB)
+      if(BOOST_PROJECT_${dependancy}_HAS_EXE)
+        list(APPEND exe_depends ${dependancy}_exe)
+      endif(BOOST_PROJECT_${dependancy}_HAS_EXE)
+    endif(has_exe)
   endforeach(dependancy)
 
   set_cpack_component(${project}_DEV_DEPENDS "${dev_depends}")
@@ -226,5 +238,3 @@ list(INSERT BOOST_FOOTER 0
 foreach(file ${BOOST_FOOTER})
   include("${file}")
 endforeach(file)
-
-cpack_configure_downloads("http://www.purplekarrot.net/boost/${BOOST_VERSION}/" ALL ADD_REMOVE)

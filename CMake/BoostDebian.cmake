@@ -57,8 +57,8 @@ foreach(component ${CPACK_COMPONENTS_ALL})
   string(TOUPPER "${component}" COMPONENT)
   set(display_name "${CPACK_COMPONENT_${COMPONENT}_DISPLAY_NAME}")
   set(description "${CPACK_COMPONENT_${COMPONENT}_DESCRIPTION}")
-  
-  set(deb_depends)
+
+  set(deb_depends ${CPACK_COMPONENT_${COMPONENT}_DEBIAN_DEPENDS})
   foreach(dep ${CPACK_COMPONENT_${COMPONENT}_DEPENDS})
     string(TOUPPER "${dep}" DEP)
     list(APPEND deb_depends ${CPACK_COMPONENT_${DEP}_DEB_PACKAGE})

@@ -12,6 +12,9 @@ boost_project(BoostBook
   DESCRIPTION
     "The BoostBook documentation format is an extension of DocBook,"
     "an SGML- or XML-based format for describing documentation."
+  DEBIAN_DEPENDS
+    docbook-xml
+    docbook-xsl
   )
 
 install(DIRECTORY dtd xsl
