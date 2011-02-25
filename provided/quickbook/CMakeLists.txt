@@ -1,6 +1,11 @@
 # Distributed under the Boost Software License, Version 1.0.
 # See http://www.boost.org/LICENSE_1_0.txt
 
+cmake_minimum_required(VERSION 2.8)
+
+find_package(Boost 1.45 NO_MODULE)
+include("${Boost_DEV_FILE}")
+
 boost_project(QuickBook
   AUTHORS
     "Joel de Guzman <joel -at- boost-consulting.com>"
@@ -31,8 +36,10 @@ boost_add_executable(quickbook
     src/code_snippet.cpp
     src/markups.cpp
     src/syntax_highlight.cpp
-    src/block_grammar.cpp
-    src/phrase_grammar.cpp
+    src/grammar.cpp
+    src/main_grammar.cpp
+    src/block_element_grammar.cpp
+    src/phrase_element_grammar.cpp
     src/doc_info_grammar.cpp
   LINK_BOOST_LIBRARIES
     filesystem

@@ -1,6 +1,11 @@
 # Distributed under the Boost Software License, Version 1.0.
 # See http://www.boost.org/LICENSE_1_0.txt
 
+cmake_minimum_required(VERSION 2.8)
+
+find_package(Boost 1.45 NO_MODULE)
+include("${Boost_DEV_FILE}")
+
 boost_project("Graph Parallel"
   AUTHORS
     "Douglas Gregor <doug.gregor -at- gmail.com>"
@@ -33,12 +38,18 @@ endif()
 
 include_directories(${MPI_INCLUDE_PATH})
 
+if(BOOST_DEBIAN_PACKAGES)
+  set(mpi_library openmpi)
+else()
+  set(mpi_library mpi)
+endif()
+
 boost_add_library(graph_parallel
   SOURCES
     src/mpi_process_group.cpp
     src/tag_allocator.cpp
   LINK_BOOST_LIBRARIES
-    mpi
+    ${mpi_library}
   LINK_LIBRARIES
     ${MPI_LIBRARIES}
   # <define>BOOST_GRAPH_NO_LIB=1

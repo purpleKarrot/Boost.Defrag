@@ -10,7 +10,7 @@
 # debian policy enforce lower case for package name
 # Package: (mandatory)
 IF(NOT CPACK_DEBIAN_PACKAGE_NAME)
-  STRING(TOLOWER "${CPACK_PACKAGE_NAME}${BOOST_VERSION}" CPACK_DEBIAN_PACKAGE_NAME)
+  STRING(TOLOWER "${CPACK_PACKAGE_NAME}${Boost_VERSION}" CPACK_DEBIAN_PACKAGE_NAME)
 ENDIF(NOT CPACK_DEBIAN_PACKAGE_NAME)
 
 # Section: (recommended)
@@ -28,7 +28,7 @@ foreach(LINE ${DESC_LINES})
   set(DEB_LONG_DESCRIPTION "${DEB_LONG_DESCRIPTION} ${LINE}\n")
 endforeach(LINE)
 
-set(debian_dir ${BOOST_MONOLITHIC_ROOT}/debian)
+set(debian_dir "${BOOST_MONOLITHIC_DIR}/debian")
 
 ################################################################################
 # debian/control
@@ -70,7 +70,7 @@ foreach(component ${CPACK_COMPONENTS_ALL})
     "Package: ${CPACK_COMPONENT_${COMPONENT}_DEB_PACKAGE}\n"
     "Architecture: any\n"
     "Depends: ${deb_depends}\n"
-    "Description: ${CPACK_PACKAGE_DESCRIPTION_SUMMARY}: ${display_name}\n"
+    "Description: Boost.${display_name}\n"
     "${DEB_LONG_DESCRIPTION}"
     " .\n"
     " ${description}\n"
@@ -92,7 +92,7 @@ file(WRITE ${debian_rules}
   "\n"
   "build:\n"
   "	cmake -E make_directory $(BUILDDIR)\n"
-  "	cd $(BUILDDIR); cmake ..\n"
+  "	cd $(BUILDDIR); cmake -DCMAKE_INSTALL_PREFIX=/usr -DBOOST_DEBIAN_PACKAGES=TRUE ..\n"
   "	make -C $(BUILDDIR) preinstall\n"
   "	touch build\n"
   "\n"
@@ -148,7 +148,7 @@ ELSE(APPLE)
     execute_process(COMMAND date '+%y%m%d%H%M' OUTPUT_VARIABLE suffix OUTPUT_STRIP_TRAILING_WHITESPACE)
 ENDIF(APPLE)
 file(WRITE ${debian_changelog}
-  "${CPACK_DEBIAN_PACKAGE_NAME} (${BOOST_VERSION}-${suffix}) maverick; urgency=low\n\n"
+  "${CPACK_DEBIAN_PACKAGE_NAME} (${Boost_VERSION}-${suffix}) maverick; urgency=low\n\n"
   "  * Package built with CMake\n\n"
   " -- ${CPACK_PACKAGE_CONTACT}  ${DATE_TIME}"
   )
@@ -164,14 +164,14 @@ if(NOT DPKG_BUILDPACKAGE OR NOT DPUT)
 endif()
 
 set(changes_file
-  "${CPACK_DEBIAN_PACKAGE_NAME}_${BOOST_VERSION}-${suffix}_source.changes"
+  "${CPACK_DEBIAN_PACKAGE_NAME}_${Boost_VERSION}-${suffix}_source.changes"
   )
 
 # TODO: the monolithic source directory might contain '.git', '.svn', etc
 
 add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/${changes_file}
   COMMAND ${DPKG_BUILDPACKAGE} -S
-  WORKING_DIRECTORY ${BOOST_MONOLITHIC_ROOT}
+  WORKING_DIRECTORY ${BOOST_MONOLITHIC_DIR}
   )
 
 add_custom_target(deploy

@@ -9,94 +9,101 @@
 ##########################################################################
 
 cmake_minimum_required(VERSION 2.8.2 FATAL_ERROR)
-project(Boost)
 
-##########################################################################
-# Version and Package Information                                        #
-##########################################################################
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/CMake)
 
-set(BOOST_VERSION_MAJOR 1)
-set(BOOST_VERSION_MINOR 45)
-set(BOOST_VERSION_PATCH 0)
-set(BOOST_VERSION_TWEAK 0)
-
-set(BOOST_VERSION "${BOOST_VERSION_MAJOR}.${BOOST_VERSION_MINOR}")
-if(BOOST_VERSION_PATCH GREATER 0)
-  set(BOOST_VERSION "${BOOST_VERSION}.${BOOST_VERSION_PATCH}")
-endif(BOOST_VERSION_PATCH GREATER 0)
-
-# make universal binaries on OS X
-set(CMAKE_OSX_ARCHITECTURES "i386;x86_64" CACHE STRING "Architectures for OS X")
-
-# CPACK_PACKAGE_NAME may not contain spaces when generating rpms
-set(CPACK_PACKAGE_NAME "Boost")
-set(CPACK_PACKAGE_VENDOR "http://www.boost.org")
-set(CPACK_PACKAGE_CONTACT "Daniel Pfeifer <daniel@pfeifer-mail.de>")
-set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Boost ${BOOST_VERSION} prerelease")
-set(CPACK_PACKAGE_FILE_NAME "boost-${BOOST_VERSION}-${BOOST_PLATFORM}-${BOOST_TOOLSET}")
-
-if (EXISTS "${CMAKE_SOURCE_DIR}/README.txt")
-  message(STATUS "Using generic cpack package description file.")
-  set(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_SOURCE_DIR}/README.txt")
-  set(CPACK_RESOURCE_FILE_README "${CMAKE_SOURCE_DIR}/README.txt")
-endif ()
-
-set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/LICENSE_1_0.txt")
-if (EXISTS "${CMAKE_SOURCE_DIR}/Welcome.txt")
-  message(STATUS "Using generic cpack welcome file.")
-  set(CPACK_RESOURCE_FILE_WELCOME "${CMAKE_SOURCE_DIR}/Welcome.txt")
+# a dropdown in the CMake GUI would be really cool
+if(NOT BOOST_STAGE MATCHES "^STABLE$|^UNSTABLE$")
+  set(BOOST_STAGE "STABLE" CACHE STRING "Possible values are STABLE and UNSTABLE" FORCE)
 endif()
 
-set(CPACK_PACKAGE_VERSION_MAJOR "${BOOST_VERSION_MAJOR}")
-set(CPACK_PACKAGE_VERSION_MINOR "${BOOST_VERSION_MINOR}")
-set(CPACK_PACKAGE_VERSION_PATCH "${BOOST_VERSION_PATCH}")
-set(CPACK_PACKAGE_INSTALL_DIRECTORY "Boost")
+option(BOOST_INCLUDE_INCUBATING "Should incubating components be included?" OFF)
 
-set(CPACK_NSIS_INSTALLED_ICON_NAME "Uninstall.exe")
-set(CPACK_NSIS_DISPLAY_NAME "Boost ${BOOST_VERSION}")
-set(CPACK_NSIS_HELP_LINK "http:\\\\\\\\www.boost.org")
-set(CPACK_NSIS_URL_INFO_ABOUT "http:\\\\\\\\www.boost.org")
-set(CPACK_NSIS_CONTACT "boost-users@lists.boost.org")
-set(CPACK_NSIS_MODIFY_PATH ON)
+#
+set(BOOST_MONOLITHIC_DIR ${CMAKE_BINARY_DIR}/monolithic)
 
-# Encode the compiler name in the package 
-if (MSVC60)
-  set(CPACK_PACKAGE_FILE_NAME "Boost-${BOOST_VERSION}-vc6")
-  set(CPACK_NSIS_DISPLAY_NAME "${CPACK_NSIS_DISPLAY_NAME} for Microsoft Visual C++ 6")
-elseif (MSVC70)
-  set(CPACK_PACKAGE_FILE_NAME "Boost-${BOOST_VERSION}-vc7")
-  set(CPACK_NSIS_DISPLAY_NAME "${CPACK_NSIS_DISPLAY_NAME} for Microsoft Visual Studio 2002")
-elseif (MSVC71)
-  set(CPACK_PACKAGE_FILE_NAME "Boost-${BOOST_VERSION}-vc71")
-  set(CPACK_NSIS_DISPLAY_NAME "${CPACK_NSIS_DISPLAY_NAME} for Microsoft Visual Studio 2003")
-elseif (MSVC80)
-  set(CPACK_PACKAGE_FILE_NAME "Boost-${BOOST_VERSION}-vc8")
-  set(CPACK_NSIS_DISPLAY_NAME "${CPACK_NSIS_DISPLAY_NAME} for Microsoft Visual Studio 2005")    
-elseif (MSVC90)
-  set(CPACK_PACKAGE_FILE_NAME "Boost-${BOOST_VERSION}-vc9")
-  set(CPACK_NSIS_DISPLAY_NAME "${CPACK_NSIS_DISPLAY_NAME} for Microsoft Visual Studio 2008")
-elseif (MSVC10)
-  set(CPACK_PACKAGE_FILE_NAME "Boost-${BOOST_VERSION}-vc10")
-  set(CPACK_NSIS_DISPLAY_NAME "${CPACK_NSIS_DISPLAY_NAME} for Microsoft Visual Studio 2010")
-elseif (BORLAND)
-  set(CPACK_PACKAGE_FILE_NAME "Boost-${BOOST_VERSION}-borland")  
-  set(CPACK_NSIS_DISPLAY_NAME "${CPACK_NSIS_DISPLAY_NAME} for Borland C++ Builder")    
-endif ()
 
-##########################################################################
-# Building and Testing                                                   #
-##########################################################################
+if(BOOST_UPDATE_SOURCE OR NOT DEFINED BOOST_UPDATE_SOURCE)
+  include(BoostModule)
+  include(BoostFetchGit)
+  include(BoostFetchSubversion)
+  include(BoostFetchDownload)
+  include(BoostFetchPristineBoost)
 
-enable_testing()
+  set(BOOST_FRAGMENT_LIST)
 
-# TODO?: create multiple build dirs with different configs when using makefiles
-add_subdirectory(src)
+  set(fragments_expression "${CMAKE_SOURCE_DIR}/fragments/boost/*.cmake")
 
-OPTION( ENABLE_EXAMPLES "Enable building of examples." OFF )
+  if(BOOST_INCLUDE_INCUBATING)
+    list(APPEND fragments_expression "${CMAKE_SOURCE_DIR}/fragments/incubating/*.cmake")
+  endif(BOOST_INCLUDE_INCUBATING)
 
-##########################################################################
-# Packaging                                                              #
-##########################################################################
+  file(GLOB_RECURSE modules ${fragments_expression})
+  foreach(module ${modules})
+    include(${module})
+  endforeach(module)
 
-include(CPack)
-cpack_configure_downloads("http://www.purplekarrot.net/boost/${BOOST_VERSION}/" ALL ADD_REMOVE)
+  list(SORT BOOST_FRAGMENT_LIST)
+  set(BOOST_MODULE_ADD_SUBDIRECTORIES)
+
+  foreach(fragment ${BOOST_FRAGMENT_LIST})
+    set(BOOST_MODULE_ADD_SUBDIRECTORIES
+      "${BOOST_MODULE_ADD_SUBDIRECTORIES}\nadd_subdirectory(${fragment})")
+
+    # fetch the fragment
+    set(source "${BOOST_${fragment}_${BOOST_STAGE}}")
+    list(GET source 0 service)
+    list(REMOVE_AT source 0)
+
+    message(STATUS "fetching '${fragment}' via ${service}.")
+
+    # prepare arguments for boost_fetch_* functions
+    set(args ${fragment} "${BOOST_MONOLITHIC_DIR}" ${source})
+
+    if(service STREQUAL "DOWNLOAD")
+      boost_fetch_download(${args})
+    elseif(service STREQUAL "GIT")
+      boost_fetch_git(${args})
+    elseif(service STREQUAL "SVN")
+      boost_get_module_svn(${args})
+    elseif(service STREQUAL "COPY_FROM_PRISTINE_BOOST")
+      boost_fetch_pristine_boost(${args})
+    else()
+      message(FATAL_ERROR "no service for ${name} given!")
+    endif()
+  endforeach(fragment)
+
+  configure_file(CMakeLists.txt.in
+    "${BOOST_MONOLITHIC_DIR}/CMakeLists.txt" @ONLY)
+
+  file(COPY
+    BoostCPack.cmake
+    CTestConfig.cmake
+    LICENSE_1_0.txt
+    README.txt
+    DESTINATION ${BOOST_MONOLITHIC_DIR}
+    )
+
+  set(BOOST_UPDATE_SOURCE OFF CACHE BOOL "update source" FORCE)
+endif(BOOST_UPDATE_SOURCE OR NOT DEFINED BOOST_UPDATE_SOURCE)
+
+# TODO: remove this once all modules provide their own CMakeLists.txt file
+execute_process(COMMAND ${CMAKE_COMMAND} -E copy_directory
+  "${CMAKE_SOURCE_DIR}/provided" "${BOOST_MONOLITHIC_DIR}"
+  )
+
+if(NOT WIN32)
+  set(CPACK_DEBIAN_BUILD_DEPENDS
+    doxygen xsltproc #dblatex    # needed for documentation
+    docbook-xml docbook-xsl      # Boost.BoostBook
+    libmpich2-dev libopenmpi-dev # Boost.MPI
+    python-dev                   # Boost.Python
+    zlib1g-dev libbz2-dev        # Boost.Iostreams
+    )
+  list(APPEND BOOST_FOOTER BoostDebian)
+endif(NOT WIN32)
+
+add_subdirectory("${BOOST_MONOLITHIC_DIR}" "${BOOST_MONOLITHIC_DIR}-build")
+
+# 
+set(CPACK_SOURCE_INSTALLED_DIRECTORIES "${BOOST_MONOLITHIC_DIR};/")
