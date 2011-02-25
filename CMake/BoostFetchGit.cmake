@@ -9,7 +9,7 @@ function(boost_fetch_git name destination)
 
   if(EXISTS "${destination}/${name}/.git")
     execute_process(
-      COMMAND "${GIT_EXECUTABLE}" --quiet ${GIT_URL}
+      COMMAND "${GIT_EXECUTABLE}" fetch --quiet ${GIT_URL}
       WORKING_DIRECTORY "${destination}/${name}"
       RESULT_VARIABLE error_code
       )
