@@ -161,22 +161,33 @@ foreach(project ${BOOST_PROJECTS_ALL})
   set_cpack_component(GROUP_${group}_DESCRIPTION "${description}")
 
   set_cpack_component(${project}_DEV_GROUP "${group}")
+  set_cpack_component(${project}_DOC_GROUP "${group}")
   set_cpack_component(${project}_LIB_GROUP "${group}")
   set_cpack_component(${project}_EXE_GROUP "${group}")
 
-  set_cpack_component(${project}_LIB_DISPLAY_NAME "${name}: Shared Libraries")
   set_cpack_component(${project}_DEV_DISPLAY_NAME "${name}: Static and import Libraries")
+  set_cpack_component(${project}_DOC_DISPLAY_NAME "${name}: Documentation")
+  set_cpack_component(${project}_LIB_DISPLAY_NAME "${name}: Shared Libraries")
   set_cpack_component(${project}_EXE_DISPLAY_NAME "${name}: Tools")
 
-  set_cpack_component(${project}_LIB_DESCRIPTION "${description}")
   set_cpack_component(${project}_DEV_DESCRIPTION "${description}")
+  set_cpack_component(${project}_DOC_DESCRIPTION "${description}")
+  set_cpack_component(${project}_LIB_DESCRIPTION "${description}")
   set_cpack_component(${project}_EXE_DESCRIPTION "${description}")
 
   # Debian
   string(REPLACE "_" "-" debian_name "${project}${Boost_VERSION}")
-  set_cpack_component(${project}_LIB_DEB_PACKAGE "libboost-${debian_name}")
   set_cpack_component(${project}_DEV_DEB_PACKAGE "libboost-${debian_name}-dev")
+  set_cpack_component(${project}_DOC_DEB_PACKAGE "libboost-${debian_name}-doc")
+  set_cpack_component(${project}_LIB_DEB_PACKAGE "libboost-${debian_name}")
   set_cpack_component(${project}_EXE_DEB_PACKAGE "boost-${debian_name}")
+
+  cmake_parse_arguments(DEB "" "" "DEV;LIB" ${BOOST_PROJECT_${project}_DEBIAN_DEPENDS})
+  list(APPEND CPACK_DEBIAN_BUILD_DEPENDS ${DEB_DEV} ${DEB_UNPARSED_ARGUMENTS})
+
+  set_cpack_component(${project}_DEV_DEBIAN_DEPENDS "${DEB_DEV}")
+  set_cpack_component(${project}_LIB_DEBIAN_DEPENDS "${DEB_LIB}")
+  set_cpack_component(${project}_EXE_DEBIAN_DEPENDS "${DEB_UNPARSED_ARGUMENTS}")
 
   # dependencies
   set(dev_depends)
@@ -198,26 +209,25 @@ foreach(project ${BOOST_PROJECTS_ALL})
     if(has_lib AND BOOST_PROJECT_${dependancy}_HAS_LIB)
       list(APPEND lib_depends ${dependancy}_lib)
     endif(has_lib AND BOOST_PROJECT_${dependancy}_HAS_LIB)
-    if(has_exe AND BOOST_PROJECT_${dependancy}_HAS_LIB)
-      list(APPEND exe_depends ${dependancy}_lib)
-    endif(has_exe AND BOOST_PROJECT_${dependancy}_HAS_LIB)
+    if(has_exe)
+      if(BOOST_PROJECT_${dependancy}_HAS_LIB)
+        list(APPEND exe_depends ${dependancy}_lib)
+      endif(BOOST_PROJECT_${dependancy}_HAS_LIB)
+      if(BOOST_PROJECT_${dependancy}_HAS_EXE)
+        list(APPEND exe_depends ${dependancy}_exe)
+      endif(BOOST_PROJECT_${dependancy}_HAS_EXE)
+    endif(has_exe)
   endforeach(dependancy)
 
   set_cpack_component(${project}_DEV_DEPENDS "${dev_depends}")
-  set_cpack_component(${project}_EXE_DEPENDS "${exe_depends}")
   set_cpack_component(${project}_LIB_DEPENDS "${lib_depends}")
+  set_cpack_component(${project}_EXE_DEPENDS "${exe_depends}")
 
-  if(has_exe)
-    list(APPEND CPACK_COMPONENTS_ALL ${project}_exe)
-  endif(has_exe)
-
-  if(has_lib)
-    list(APPEND CPACK_COMPONENTS_ALL ${project}_lib)
-  endif(has_lib)
-
-  if(has_dev)
-    list(APPEND CPACK_COMPONENTS_ALL ${project}_dev)
-  endif(has_dev)
+  foreach(component dev doc lib exe)
+    if(has_${component})
+      list(APPEND CPACK_COMPONENTS_ALL ${project}_${component})
+    endif(has_${component})
+  endforeach(component)
 endforeach(project)
 
 list(INSERT BOOST_FOOTER 0
@@ -228,5 +238,3 @@ list(INSERT BOOST_FOOTER 0
 foreach(file ${BOOST_FOOTER})
   include("${file}")
 endforeach(file)
-
-cpack_configure_downloads("http://www.purplekarrot.net/boost/${BOOST_VERSION}/" ALL ADD_REMOVE)

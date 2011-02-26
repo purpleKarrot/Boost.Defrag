@@ -57,8 +57,8 @@ foreach(component ${CPACK_COMPONENTS_ALL})
   string(TOUPPER "${component}" COMPONENT)
   set(display_name "${CPACK_COMPONENT_${COMPONENT}_DISPLAY_NAME}")
   set(description "${CPACK_COMPONENT_${COMPONENT}_DESCRIPTION}")
-  
-  set(deb_depends)
+
+  set(deb_depends ${CPACK_COMPONENT_${COMPONENT}_DEBIAN_DEPENDS})
   foreach(dep ${CPACK_COMPONENT_${COMPONENT}_DEPENDS})
     string(TOUPPER "${dep}" DEP)
     list(APPEND deb_depends ${CPACK_COMPONENT_${DEP}_DEB_PACKAGE})
@@ -93,7 +93,7 @@ file(WRITE ${debian_rules}
   "build:\n"
   "	cmake -E make_directory $(BUILDDIR)\n"
   "	cd $(BUILDDIR); cmake -DCMAKE_INSTALL_PREFIX=/usr -DBOOST_DEBIAN_PACKAGES=TRUE ..\n"
-  "	make -C $(BUILDDIR) preinstall\n"
+  "	make -C $(BUILDDIR) preinstall documentation\n"
   "	touch build\n"
   "\n"
   "binary: binary-indep binary-arch\n"
@@ -163,11 +163,15 @@ if(NOT DPKG_BUILDPACKAGE OR NOT DPUT)
   return()
 endif()
 
+# TODO: the monolithic source directory might contain '.git', '.svn', etc
+#file(COPY ${BOOST_MONOLITHIC_DIR} DESTINATION _Debian
+#  PATTERN ".git" EXCLUDE
+#  PATTERN ".svn" EXCLUDE
+#  )
+
 set(changes_file
   "${CPACK_DEBIAN_PACKAGE_NAME}_${Boost_VERSION}-${suffix}_source.changes"
   )
-
-# TODO: the monolithic source directory might contain '.git', '.svn', etc
 
 add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/${changes_file}
   COMMAND ${DPKG_BUILDPACKAGE} -S

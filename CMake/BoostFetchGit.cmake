@@ -9,14 +9,14 @@ function(boost_fetch_git name destination)
 
   if(EXISTS "${destination}/${name}/.git")
     execute_process(
-      COMMAND "${GIT_EXECUTABLE}" fetch ${GIT_URL}
+      COMMAND "${GIT_EXECUTABLE}" fetch --quiet ${GIT_URL}
       WORKING_DIRECTORY "${destination}/${name}"
       RESULT_VARIABLE error_code
       )
   else()
     file(REMOVE_RECURSE "${destination}/${name}")
     execute_process(
-      COMMAND "${GIT_EXECUTABLE}" clone ${GIT_URL} ${name}
+      COMMAND "${GIT_EXECUTABLE}" clone --quiet ${GIT_URL} ${name}
       WORKING_DIRECTORY "${destination}"
       RESULT_VARIABLE error_code
       )
@@ -26,7 +26,7 @@ function(boost_fetch_git name destination)
   endif()
 
   execute_process(
-    COMMAND "${GIT_EXECUTABLE}" checkout ${GIT_TAG}
+    COMMAND "${GIT_EXECUTABLE}" checkout --quiet ${GIT_TAG}
     COMMAND "${GIT_EXECUTABLE}" submodule init
     COMMAND "${GIT_EXECUTABLE}" submodule update --recursive
     WORKING_DIRECTORY "${destination}/${name}"

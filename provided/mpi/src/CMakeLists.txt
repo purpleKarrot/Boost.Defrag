@@ -7,7 +7,7 @@ if(NOT BOOST_MPI_BASE)
   set(boost_mpi_name "mpi")
   find_package(MPI REQUIRED)
 else()
-  boost_project(${BOOST_MPI_BASE} DEPENDS mpi)
+  boost_project(${BOOST_MPI_BASE} DEPENDS mpi ${MPI_DEBIAN_DEPENDS})
   set(boost_mpi_name "${BOOST_MPI_BASE}")
 
   # Find the right compiler executable.

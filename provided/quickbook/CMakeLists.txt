@@ -47,7 +47,7 @@ boost_add_executable(quickbook
     system
   )
 
-boost_documentation(doc/quickbook.qbk
+#boost_documentation(doc/quickbook.qbk
 #  IMAGES
 #    doc/html/images
-  )
+#  )

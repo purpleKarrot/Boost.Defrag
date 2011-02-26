@@ -14,6 +14,9 @@ boost_project(Iostreams
   DEPENDS
     range
     random
+  DEBIAN_DEPENDS
+    DEV libbz2-dev zlib1g-dev
+    LIB libbz2-1.0 zlib1g
   )
 
 add_definitions(-DBOOST_IOSTREAMS_USE_DEPRECATED)

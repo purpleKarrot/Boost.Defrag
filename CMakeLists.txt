@@ -19,6 +19,8 @@ endif()
 
 option(BOOST_INCLUDE_INCUBATING "Should incubating components be included?" OFF)
 
+option(BOOST_DEBIAN_PACKAGES "" OFF)
+
 #
 set(BOOST_MONOLITHIC_DIR ${CMAKE_BINARY_DIR}/monolithic)
 
@@ -65,7 +67,7 @@ if(BOOST_UPDATE_SOURCE OR NOT DEFINED BOOST_UPDATE_SOURCE)
     elseif(service STREQUAL "GIT")
       boost_fetch_git(${args})
     elseif(service STREQUAL "SVN")
-      boost_get_module_svn(${args})
+      boost_fetch_svn(${args})
     elseif(service STREQUAL "COPY_FROM_PRISTINE_BOOST")
       boost_fetch_pristine_boost(${args})
     else()
@@ -92,16 +94,9 @@ execute_process(COMMAND ${CMAKE_COMMAND} -E copy_directory
   "${CMAKE_SOURCE_DIR}/provided" "${BOOST_MONOLITHIC_DIR}"
   )
 
-if(NOT WIN32)
-  set(CPACK_DEBIAN_BUILD_DEPENDS
-    doxygen xsltproc #dblatex    # needed for documentation
-    docbook-xml docbook-xsl      # Boost.BoostBook
-    libmpich2-dev libopenmpi-dev # Boost.MPI
-    python-dev                   # Boost.Python
-    zlib1g-dev libbz2-dev        # Boost.Iostreams
-    )
+if(BOOST_DEBIAN_PACKAGES)
   list(APPEND BOOST_FOOTER BoostDebian)
-endif(NOT WIN32)
+endif(BOOST_DEBIAN_PACKAGES)
 
 add_subdirectory("${BOOST_MONOLITHIC_DIR}" "${BOOST_MONOLITHIC_DIR}-build")
 
