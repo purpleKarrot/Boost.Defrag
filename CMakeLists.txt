@@ -50,7 +50,7 @@ if(BOOST_UPDATE_SOURCE OR NOT DEFINED BOOST_UPDATE_SOURCE)
 
   foreach(fragment ${BOOST_FRAGMENT_LIST})
     set(BOOST_MODULE_ADD_SUBDIRECTORIES
-      "${BOOST_MODULE_ADD_SUBDIRECTORIES}\nadd_subdirectory(${fragment})")
+      "${BOOST_MODULE_ADD_SUBDIRECTORIES}\nadd_subdirectory(src/${fragment})")
 
     # fetch the fragment
     set(source "${BOOST_${fragment}_${BOOST_STAGE}}")
@@ -60,7 +60,7 @@ if(BOOST_UPDATE_SOURCE OR NOT DEFINED BOOST_UPDATE_SOURCE)
     message(STATUS "fetching '${fragment}' via ${service}.")
 
     # prepare arguments for boost_fetch_* functions
-    set(args ${fragment} "${BOOST_MONOLITHIC_DIR}" ${source})
+    set(args ${fragment} "${BOOST_MONOLITHIC_DIR}/src" ${source})
 
     if(service STREQUAL "DOWNLOAD")
       boost_fetch_download(${args})
@@ -91,7 +91,7 @@ endif(BOOST_UPDATE_SOURCE OR NOT DEFINED BOOST_UPDATE_SOURCE)
 
 # TODO: remove this once all modules provide their own CMakeLists.txt file
 execute_process(COMMAND ${CMAKE_COMMAND} -E copy_directory
-  "${CMAKE_SOURCE_DIR}/provided" "${BOOST_MONOLITHIC_DIR}"
+  "${CMAKE_SOURCE_DIR}/provided" "${BOOST_MONOLITHIC_DIR}/src"
   )
 
 if(BOOST_DEBIAN_PACKAGES)
