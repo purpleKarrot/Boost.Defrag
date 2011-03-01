@@ -6,7 +6,7 @@ cmake_minimum_required(VERSION 2.8)
 find_package(Boost 1.45 NO_MODULE)
 include("${Boost_DEV_FILE}")
 
-boost_project(QuickBook
+boost_project(QuickBook TOOL
   AUTHORS
     "Joel de Guzman <joel -at- boost-consulting.com>"
     "Eric Niebler <eric -at- boost-consulting.com>"

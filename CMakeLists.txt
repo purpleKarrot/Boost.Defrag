@@ -8,7 +8,7 @@
 #   http://www.boost.org/LICENSE_1_0.txt                                 #
 ##########################################################################
 
-cmake_minimum_required(VERSION 2.8.2 FATAL_ERROR)
+cmake_minimum_required(VERSION 2.8.4 FATAL_ERROR)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/CMake)
 

@@ -16,7 +16,7 @@ boost_project(Python
   DEPENDS
     graph
     numeric # because of boost/cast.hpp from libs/python/src/errors.cpp:11
-  DEBIAN_DEPENDS
+  DEB_DEPENDS
     DEV python2.6-dev
     LIB libpython2.6
   )

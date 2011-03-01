@@ -6,13 +6,13 @@ cmake_minimum_required(VERSION 2.8)
 find_package(Boost 1.45 NO_MODULE)
 include("${Boost_DEV_FILE}")
 
-boost_project(BoostBook
+boost_project(BoostBook TOOL
   AUTHORS
     "Douglas Gregor <doug.gregor -at- gmail.com>"
   DESCRIPTION
     "The BoostBook documentation format is an extension of DocBook,"
     "an SGML- or XML-based format for describing documentation."
-  DEBIAN_DEPENDS
+  DEB_DEPENDS
     docbook-xml
     docbook-xsl
   )
@@ -20,11 +20,11 @@ boost_project(BoostBook
 install(DIRECTORY dtd xsl
   DESTINATION share/boostbook
 # CONFIGURATIONS
-  COMPONENT boostbook_exe
+  COMPONENT boostbook_runtime
   )
 
 # 
-set_boost_project("${BOOST_HAS_EXE_VAR}" ON)
+set_boost_project("${BOOST_HAS_RUNTIME_VAR}" ON)
 
 add_subdirectory(doc)
 

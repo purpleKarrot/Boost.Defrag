@@ -14,7 +14,7 @@ boost_project(Iostreams
   DEPENDS
     range
     random
-  DEBIAN_DEPENDS
+  DEB_DEPENDS
     DEV libbz2-dev zlib1g-dev
     LIB libbz2-1.0 zlib1g
   )
