@@ -127,9 +127,6 @@ endif(CMAKE_CONFIGURATION_TYPES)
 set(BOOSTBOOK_DTD_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src/boostbook/dtd" CACHE INTERNAL "" FORCE)
 set(BOOSTBOOK_XSL_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src/boostbook/xsl" CACHE INTERNAL "" FORCE)
 
-set(QUICKBOOK_FOUND ON CACHE INTERNAL "" FORCE)
-set(QUICKBOOK_EXECUTABLE quickbook)
-
 set(BOOST_PROJECTS_ALL)
 
 ##########################################################################
