@@ -2,7 +2,10 @@
 # See http://www.boost.org/LICENSE_1_0.txt
 
 boost_module(filesystem
-  COPY_FROM_PRISTINE_BOOST
-    boost/filesystem
-    boost/filesystem.hpp
+  STABLE GIT
+    URL git://github.com/Beman/filesystem.git
+    TAG 70969644b7edad95a305
+  UNSTABLE GIT
+    URL git://github.com/Beman/filesystem.git
+    TAG master
   )
