@@ -31,6 +31,8 @@ file(WRITE "${PROJECT_BINARY_DIR}/BoostConfig.cmake"
   "set(Boost_LIBRARY_DIRS \"${CMAKE_BINARY_DIR}/lib\")\n"
   "set(Boost_RESOURCE_PATH \"${PROJECT_SOURCE_DIR}/src/cmake/resources\")\n"
   "set(Boost_MODULE_PATH \"${PROJECT_SOURCE_DIR}/src/cmake/modules\")\n"
+  "set(BOOSTBOOK_CATALOG \"${PROJECT_SOURCE_DIR}/src/boostbook/catalog.xml\")\n"
+  "set(BOOSTBOOK_XSL_DIR \"${PROJECT_SOURCE_DIR}/src/boostbook/xsl\")\n"
   "set(Boost_USE_FILE \"\${Boost_MODULE_PATH}/UseBoost.cmake\")\n"
   "set(Boost_DEV_FILE \"\${Boost_MODULE_PATH}/UseBoostDev.cmake\")\n"
   )
@@ -121,12 +123,6 @@ else(CMAKE_CONFIGURATION_TYPES)
   endif (NOT CMAKE_BUILD_TYPE)
 endif(CMAKE_CONFIGURATION_TYPES)
 
-#set(CMAKE_SHARED_LIBRARY_PREFIX libboost_)
-#set(CMAKE_STATIC_LIBRARY_PREFIX libboost_)
-
-set(BOOSTBOOK_DTD_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src/boostbook/dtd" CACHE INTERNAL "" FORCE)
-set(BOOSTBOOK_XSL_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src/boostbook/xsl" CACHE INTERNAL "" FORCE)
-
 set(BOOST_PROJECTS_ALL)
 
 ##########################################################################
@@ -149,9 +145,14 @@ foreach(project ${BOOST_PROJECTS_ALL})
   set(has_develop ${BOOST_PROJECT_${project}_HAS_DEVELOP})
   set(has_runtime ${BOOST_PROJECT_${project}_HAS_RUNTIME})
   set(has_manual  ${BOOST_PROJECT_${project}_HAS_DOC})
+  set(is_tool     ${BOOST_PROJECT_${project}_TOOL})
   set(name        "${BOOST_PROJECT_${project}_NAME}")
   set(description "${BOOST_PROJECT_${project}_DESCRIPTION}")
   set(group       "boost_${project}")
+
+  if(NOT is_tool)
+    set(name "${name} Library")
+  endif()
 
   set_cpack_component(GROUP_${group}_DISPLAY_NAME "${name}")
   set_cpack_component(GROUP_${group}_DESCRIPTION "${description}")
@@ -160,22 +161,22 @@ foreach(project ${BOOST_PROJECTS_ALL})
   set_cpack_component(${project}_RUNTIME_GROUP "${group}")
   set_cpack_component(${project}_MANUAL_GROUP "${group}")
 
-  set_cpack_component(${project}_DEVELOP_DISPLAY_NAME "${name}: Static and import Libraries")
-  set_cpack_component(${project}_RUNTIME_DISPLAY_NAME "${name}: Runtime Components")
-  set_cpack_component(${project}_MANUAL_DISPLAY_NAME "${name}: Manual")
+  set_cpack_component(${project}_DEVELOP_DISPLAY_NAME "${name} development files")
+  set_cpack_component(${project}_RUNTIME_DISPLAY_NAME "${name}")
+  set_cpack_component(${project}_MANUAL_DISPLAY_NAME "${name} documentation")
 
   set_cpack_component(${project}_DEVELOP_DESCRIPTION "${description}")
   set_cpack_component(${project}_RUNTIME_DESCRIPTION "${description}")
   set_cpack_component(${project}_MANUAL_DESCRIPTION "${description}")
 
   # Debian
-  string(REPLACE "_" "-" debian_name "${project}${Boost_VERSION}")
-  if(BOOST_PROJECT_${project}_TOOL)
+  string(REPLACE "_" "-" debian_name "${project}")
+  if(is_tool)
     set(prefix "boost-")
   else()
     set(prefix "libboost-")
   endif()
-  
+
   set_cpack_component(${project}_DEVELOP_DEB_PACKAGE "${prefix}${debian_name}-dev")
   set_cpack_component(${project}_RUNTIME_DEB_PACKAGE "${prefix}${debian_name}")
   set_cpack_component(${project}_MANUAL_DEB_PACKAGE  "${prefix}${debian_name}-doc")

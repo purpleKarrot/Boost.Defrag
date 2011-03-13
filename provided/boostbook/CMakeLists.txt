@@ -17,16 +17,27 @@ boost_project(BoostBook TOOL
     docbook-xsl
   )
 
+add_subdirectory(doc)
+
+if(WIN32)
+  set(BOOSTBOOK_DIR "boostbook")
+else(WIN32)
+  set(BOOSTBOOK_DIR "share/boost/boostbook")
+endif(WIN32)
+
 install(DIRECTORY dtd xsl
-  DESTINATION share/boostbook
-# CONFIGURATIONS
-  COMPONENT boostbook_runtime
+  DESTINATION "${BOOSTBOOK_DIR}"
+  COMPONENT "${BOOST_RUNTIME_COMPONENT}"
   )
 
-# 
-set_boost_project("${BOOST_HAS_RUNTIME_VAR}" ON)
+install(FILES catalog.xml
+  DESTINATION "${BOOSTBOOK_DIR}"
+  COMPONENT "${BOOST_RUNTIME_COMPONENT}"
+  )
 
-add_subdirectory(doc)
+file(WRITE ${BOOST_EXPORT_FILE} "\n"
+  "set(BOOSTBOOK_CATALOG \"${CMAKE_INSTALL_PREFIX}/${BOOSTBOOK_DIR}/catalog.xml\")\n"
+  )
 
 #if(CMAKE_HOST_WIN32)
 #  boost_fetch_download(docbook_xml "${CMAKE_BINARY_DIR}"
@@ -40,3 +51,18 @@ add_subdirectory(doc)
 #  set(DOCBOOK_DTD_DIR "${CMAKE_BINARY_DIR}/docbook_xml" CACHE FILEPATH "" FORCE)
 #  set(DOCBOOK_XSL_DIR "${CMAKE_BINARY_DIR}/docbook_xsl" CACHE FILEPATH "" FORCE)
 #endif(CMAKE_HOST_WIN32)
+
+## Find the DocBook DTD (version 4.2)
+#find_path(DOCBOOK_DTD_DIR docbookx.dtd PATHS
+#  "/usr/share/xml/docbook/schema/dtd/4.2"
+#  "/opt/local/share/xml/docbook/4.2"
+#  )
+#
+## Find the DocBook XSL stylesheets
+#find_path(DOCBOOK_XSL_DIR html/html.xsl PATHS
+#  "/usr/share/xml/docbook/stylesheet/nwalsh"
+#  "/opt/local/share/xsl/docbook-xsl"
+#  )
+
+# "http://www.oasis-open.org/docbook/xml/4.2/"
+# "http://docbook.sourceforge.net/release/xsl/current/"

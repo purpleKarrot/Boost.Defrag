@@ -10,7 +10,7 @@
 # debian policy enforce lower case for package name
 # Package: (mandatory)
 IF(NOT CPACK_DEBIAN_PACKAGE_NAME)
-  STRING(TOLOWER "${CPACK_PACKAGE_NAME}${Boost_VERSION}" CPACK_DEBIAN_PACKAGE_NAME)
+  STRING(TOLOWER "${CPACK_PACKAGE_NAME}" CPACK_DEBIAN_PACKAGE_NAME)
 ENDIF(NOT CPACK_DEBIAN_PACKAGE_NAME)
 
 # Section: (recommended)
