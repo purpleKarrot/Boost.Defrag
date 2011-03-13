@@ -5,8 +5,8 @@ set(PRISTINE_BOOST "$ENV{PRISTINE_BOOST}")
 if(NOT EXISTS "${PRISTINE_BOOST}/LICENSE_1_0.txt")
   include(BoostFetchDownload)
   boost_fetch_download(pristine_boost ${CMAKE_BINARY_DIR}
-    URL http://sourceforge.net/projects/boost/files/boost/1.46.0/boost_1_46_0.tar.bz2/download
-    MD5 37b12f1702319b73876b0097982087e0
+    URL http://sourceforge.net/projects/boost/files/boost/1.46.1/boost_1_46_1.tar.bz2/download
+    MD5 7375679575f4c8db605d426fc721d506
     )
   set(PRISTINE_BOOST "${CMAKE_BINARY_DIR}/pristine_boost")
 endif()

@@ -37,6 +37,7 @@ install(FILES catalog.xml
 
 file(WRITE ${BOOST_EXPORT_FILE} "\n"
   "set(BOOSTBOOK_CATALOG \"${CMAKE_INSTALL_PREFIX}/${BOOSTBOOK_DIR}/catalog.xml\")\n"
+  "set(BOOSTBOOK_XSL_DIR \"${CMAKE_INSTALL_PREFIX}/${BOOSTBOOK_DIR}/xsl\")\n"
   )
 
 #if(CMAKE_HOST_WIN32)
