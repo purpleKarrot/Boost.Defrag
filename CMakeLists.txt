@@ -9,6 +9,7 @@
 ##########################################################################
 
 cmake_minimum_required(VERSION 2.8.4 FATAL_ERROR)
+project(Boost)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/CMake)
 
