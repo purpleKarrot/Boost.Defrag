@@ -35,9 +35,9 @@ install(FILES catalog.xml
   COMPONENT "${BOOST_RUNTIME_COMPONENT}"
   )
 
-file(WRITE ${BOOST_EXPORT_FILE} "\n"
-  "set(BOOSTBOOK_CATALOG \"${CMAKE_INSTALL_PREFIX}/${BOOSTBOOK_DIR}/catalog.xml\")\n"
-  "set(BOOSTBOOK_XSL_DIR \"${CMAKE_INSTALL_PREFIX}/${BOOSTBOOK_DIR}/xsl\")\n"
+file(WRITE ${BOOST_EXPORT_FILE}
+  "set(BOOSTBOOK_CATALOG \"\${CMAKE_CURRENT_LIST_DIR}/../boostbook/catalog.xml\")\n"
+  "set(BOOSTBOOK_XSL_DIR \"\${CMAKE_CURRENT_LIST_DIR}/../boostbook/xsl\")\n"
   )
 
 #if(CMAKE_HOST_WIN32)

@@ -68,7 +68,7 @@ file(APPEND ${specfile}
 
 file(APPEND ${specfile}
   "%build\n"
-  "cmake -DCMAKE_INSTALL_PREFIX=$RPM_BUILD_ROOT/usr .\n"
+  "cmake .\n"
   "make -j8 preinstall\n"
   "\n"
   )
