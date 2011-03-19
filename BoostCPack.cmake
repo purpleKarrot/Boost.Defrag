@@ -12,7 +12,7 @@ set(CPACK_PACKAGE_NAME "Boost")
 set(CPACK_PACKAGE_VENDOR "http://www.boost.org")
 set(CPACK_PACKAGE_CONTACT "Daniel Pfeifer <daniel@pfeifer-mail.de>")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Boost ${Boost_VERSION}")
-set(CPACK_PACKAGE_FILE_NAME "boost-${Boost_VERSION}-${BOOST_PLATFORM}-${BOOST_TOOLSET}")
+set(CPACK_PACKAGE_FILE_NAME "Boost-${Boost_VERSION}-${CMAKE_SYSTEM_NAME}-${BOOST_TOOLSET}")
 
 set(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_SOURCE_DIR}/README.txt")
 set(CPACK_RESOURCE_FILE_README "${CMAKE_SOURCE_DIR}/README.txt")
@@ -32,7 +32,6 @@ set(CPACK_NSIS_DISPLAY_NAME "Boost ${Boost_VERSION}")
 set(CPACK_NSIS_HELP_LINK "http:\\\\\\\\www.boost.org")
 set(CPACK_NSIS_URL_INFO_ABOUT "http:\\\\\\\\www.boost.org")
 set(CPACK_NSIS_CONTACT "boost-users@lists.boost.org")
-set(CPACK_NSIS_MODIFY_PATH ON)
 
 # Encode the compiler name in the package 
 if (MSVC60)
