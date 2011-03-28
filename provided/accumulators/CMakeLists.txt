@@ -15,6 +15,8 @@ boost_project(Accumulators
     parameter
     typeof
     foreach
+  DEB_DEPENDS
+    DEV ghostscript
   )
 
 file(GLOB_RECURSE headers ${CMAKE_CURRENT_SOURCE_DIR}/boost/*.?pp)

@@ -75,10 +75,8 @@ endfunction(set_cpack_component)
 set(CPACK_COMPONENTS_ALL)
 
 foreach(project ${BOOST_PROJECTS_ALL})
-  set(has_develop ${BOOST_PROJECT_${project}_HAS_DEVELOP})
-  set(has_runtime ${BOOST_PROJECT_${project}_HAS_RUNTIME})
-  set(has_manual  ${BOOST_PROJECT_${project}_HAS_MANUAL})
   set(is_tool     ${BOOST_PROJECT_${project}_TOOL})
+  set(header_only ${BOOST_PROJECT_${project}_HEADER_ONLY})
   set(name        "${BOOST_PROJECT_${project}_NAME}")
   set(description "${BOOST_PROJECT_${project}_DESCRIPTION}")
   set(group       "boost_${project}")
@@ -92,15 +90,18 @@ foreach(project ${BOOST_PROJECTS_ALL})
 
   set_cpack_component(${project}_DEVELOP_GROUP "${group}")
   set_cpack_component(${project}_RUNTIME_GROUP "${group}")
-  set_cpack_component(${project}_MANUAL_GROUP "${group}")
+  set_cpack_component(${project}_MANUAL_GROUP  "${group}")
+  set_cpack_component(${project}_DEBUG_GROUP   "${group}")
 
   set_cpack_component(${project}_DEVELOP_DISPLAY_NAME "${name} development files")
   set_cpack_component(${project}_RUNTIME_DISPLAY_NAME "${name}")
-  set_cpack_component(${project}_MANUAL_DISPLAY_NAME "${name} documentation")
+  set_cpack_component(${project}_MANUAL_DISPLAY_NAME  "${name} documentation")
+  set_cpack_component(${project}_DEBUG_DISPLAY_NAME   "${name} debug symbols")
 
   set_cpack_component(${project}_DEVELOP_DESCRIPTION "${description}")
   set_cpack_component(${project}_RUNTIME_DESCRIPTION "${description}")
-  set_cpack_component(${project}_MANUAL_DESCRIPTION "${description}")
+  set_cpack_component(${project}_MANUAL_DESCRIPTION  "${description}")
+  set_cpack_component(${project}_DEBUG_DESCRIPTION   "${description}")
 
   # Debian
   string(REPLACE "_" "-" debian_name "${project}")
@@ -113,6 +114,7 @@ foreach(project ${BOOST_PROJECTS_ALL})
   set_cpack_component(${project}_DEVELOP_DEB_PACKAGE "${prefix}${debian_name}-dev")
   set_cpack_component(${project}_RUNTIME_DEB_PACKAGE "${prefix}${debian_name}")
   set_cpack_component(${project}_MANUAL_DEB_PACKAGE  "${prefix}${debian_name}-doc")
+  set_cpack_component(${project}_DEBUG_DEB_PACKAGE   "${prefix}${debian_name}-dbg")
 
   cmake_parse_arguments(DEB "" "" "DEV;LIB" ${BOOST_PROJECT_${project}_DEB_DEPENDS})
   list(APPEND CPACK_DEBIAN_BUILD_DEPENDS ${DEB_DEV} ${DEB_UNPARSED_ARGUMENTS})
@@ -123,29 +125,44 @@ foreach(project ${BOOST_PROJECTS_ALL})
   # dependencies
   set(develop_depends)
   set(runtime_depends)
+  set(debug_depends)
 
-  if(has_develop AND has_runtime)
+  if(NOT header_only)
     list(APPEND develop_depends ${project}_runtime)
-  endif(has_develop AND has_runtime)
+  endif(NOT header_only)
 
   foreach(dependancy ${BOOST_PROJECT_${project}_DEPENDS})
-    if(has_develop AND BOOST_PROJECT_${dependancy}_HAS_DEVELOP)
+    if(NOT is_tool AND NOT BOOST_PROJECT_${dependancy}_TOOL)
       list(APPEND develop_depends ${dependancy}_develop)
-    endif(has_develop AND BOOST_PROJECT_${dependancy}_HAS_DEVELOP)
-    if(has_runtime AND BOOST_PROJECT_${dependancy}_HAS_RUNTIME)
+    endif(NOT is_tool AND NOT BOOST_PROJECT_${dependancy}_TOOL)
+    if(NOT header_only AND NOT BOOST_PROJECT_${dependancy}_HEADER_ONLY)
       list(APPEND runtime_depends ${dependancy}_runtime)
-    endif(has_runtime AND BOOST_PROJECT_${dependancy}_HAS_RUNTIME)
+      list(APPEND debug_depends ${dependancy}_debug)
+    endif(NOT header_only AND NOT BOOST_PROJECT_${dependancy}_HEADER_ONLY)
   endforeach(dependancy)
 
   set_cpack_component(${project}_DEVELOP_DEPENDS "${develop_depends}")
   set_cpack_component(${project}_RUNTIME_DEPENDS "${runtime_depends}")
+  set_cpack_component(${project}_DEBUG_DEPENDS "${debug_depends}")
 
-  foreach(component develop runtime manual)
-    if(has_${component})
-      list(APPEND CPACK_COMPONENTS_ALL ${project}_${component})
-    endif(has_${component})
-  endforeach(component)
+  if(is_tool)
+    list(APPEND CPACK_COMPONENTS_ALL ${project}_runtime)
+  else(is_tool)
+    list(APPEND CPACK_COMPONENTS_ALL ${project}_develop)
+  endif(is_tool)
+
+  if(NOT header_only AND NOT is_tool)
+    list(APPEND CPACK_COMPONENTS_ALL
+      ${project}_runtime
+      ${project}_debug
+      )
+  endif(NOT header_only AND NOT is_tool)
+
+  list(APPEND CPACK_COMPONENTS_ALL ${project}_manual)
 endforeach(project)
+
+list(SORT CPACK_COMPONENTS_ALL)
+list(REMOVE_DUPLICATES CPACK_COMPONENTS_ALL)
 
 list(INSERT BOOST_FOOTER 0
   "${PROJECT_SOURCE_DIR}/BoostCPack.cmake"

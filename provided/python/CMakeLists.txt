@@ -17,8 +17,8 @@ boost_project(Python
     graph
     numeric # because of boost/cast.hpp from libs/python/src/errors.cpp:11
   DEB_DEPENDS
-    DEV python2.6-dev
-    LIB libpython2.6
+    DEV python2.7-dev
+    LIB libpython2.7
   )
 
 file(GLOB_RECURSE headers ${CMAKE_CURRENT_SOURCE_DIR}/boost/*.?pp)

@@ -88,12 +88,22 @@ set(debian_rules ${debian_dir}/rules)
 file(WRITE ${debian_rules}
   "#!/usr/bin/make -f\n"
   "\n"
-  "BUILDDIR = build_dir\n"
+  "DEBUG = debug_build\n"
+  "RELEASE = release_build\n"
+  "CFLAGS =\n"
+  "CPPFLAGS =\n"
+  "CXXFLAGS =\n"
+  "FFLAGS =\n"
+  "LDFLAGS =\n"
   "\n"
   "build:\n"
-  "	cmake -E make_directory $(BUILDDIR)\n"
-  "	cd $(BUILDDIR); cmake -DBOOST_DEBIAN_PACKAGES=TRUE ..\n"
-  "	make -C $(BUILDDIR) preinstall\n"
+  "	cmake -E make_directory $(DEBUG)\n"
+  "	cmake -E make_directory $(RELEASE)\n"
+  "	cd $(DEBUG); cmake -DCMAKE_BUILD_TYPE=Debug -DBOOST_DEBIAN_PACKAGES=TRUE ..\n"
+  "	cd $(RELEASE); cmake -DCMAKE_BUILD_TYPE=Release -DBOOST_DEBIAN_PACKAGES=TRUE ..\n"
+  "	make --no-print-directory -C $(DEBUG) preinstall\n"
+  "	make --no-print-directory -C $(RELEASE) preinstall\n"
+  "	make --no-print-directory -C $(RELEASE) documentation\n"
   "	touch build\n"
   "\n"
   "binary: binary-indep binary-arch\n"
@@ -101,7 +111,7 @@ file(WRITE ${debian_rules}
   "binary-indep: build\n"
   "\n"
   "binary-arch: build\n"
-# "	cd $(BUILDDIR); cmake -DCOMPONENT=Unspecified -DCMAKE_INSTALL_PREFIX=../debian/tmp/usr -P cmake_install.cmake\n"
+# "	cd $(RELEASE); cmake -DCOMPONENT=Unspecified -DCMAKE_INSTALL_PREFIX=../debian/tmp/usr -P cmake_install.cmake\n"
 # "	cmake -E make_directory debian/tmp/DEBIAN\n"
 # "	dpkg-gencontrol -p${CPACK_DEBIAN_PACKAGE_NAME}\n"
 # "	dpkg --build debian/tmp ..\n"
@@ -111,7 +121,8 @@ foreach(component ${CPACK_COMPONENTS_ALL})
   string(TOUPPER "${component}" COMPONENT)
   set(path debian/${component})
   file(APPEND ${debian_rules}
-    "	cd $(BUILDDIR); cmake -DCOMPONENT=${component} -DCMAKE_INSTALL_PREFIX=../${path}/usr -P cmake_install.cmake\n"
+    "	cd $(DEBUG); cmake -DCOMPONENT=${component} -DCMAKE_INSTALL_PREFIX=../${path}/usr -P cmake_install.cmake\n"
+    "	cd $(RELEASE); cmake -DCOMPONENT=${component} -DCMAKE_INSTALL_PREFIX=../${path}/usr -P cmake_install.cmake\n"
     "	cmake -E make_directory ${path}/DEBIAN\n"
     "	dpkg-gencontrol -p${CPACK_COMPONENT_${COMPONENT}_DEB_PACKAGE} -P${path}\n"
     "	dpkg --build ${path} ..\n"
@@ -122,7 +133,7 @@ file(APPEND ${debian_rules}
   "\n"
   "clean:\n"
   "	rm -f build\n"
-  "	rm -rf $(BUILDDIR)\n"
+  "	rm -rf $(RELEASE)\n"
   "\n"
   ".PHONY: binary binary-arch binary-indep clean\n"
   )
@@ -142,9 +153,9 @@ file(WRITE ${debian_dir}/source/format "3.0 (native)")
 set(debian_changelog ${debian_dir}/changelog)
 execute_process(COMMAND date -R OUTPUT_VARIABLE DATE_TIME)
 #execute_process(COMMAND date +"%a, %d %b %Y %H:%M:%S %z" OUTPUT_VARIABLE DATE_TIME)
-execute_process(COMMAND date +%y%m%d OUTPUT_VARIABLE suffix OUTPUT_STRIP_TRAILING_WHITESPACE)
+execute_process(COMMAND date +%y%m%d.2 OUTPUT_VARIABLE suffix OUTPUT_STRIP_TRAILING_WHITESPACE)
 file(WRITE ${debian_changelog}
-  "${CPACK_DEBIAN_PACKAGE_NAME} (${Boost_VERSION}-${suffix}) maverick; urgency=low\n\n"
+  "${CPACK_DEBIAN_PACKAGE_NAME} (${Boost_VERSION}-${suffix}) natty; urgency=low\n\n"
   "  * Package built with CMake\n\n"
   " -- ${CPACK_PACKAGE_CONTACT}  ${DATE_TIME}"
   )
@@ -158,12 +169,6 @@ find_program(DPUT dput)
 if(NOT DPKG_BUILDPACKAGE OR NOT DPUT)
   return()
 endif()
-
-# TODO: the monolithic source directory might contain '.git', '.svn', etc
-#file(COPY ${BOOST_MONOLITHIC_DIR} DESTINATION _Debian
-#  PATTERN ".git" EXCLUDE
-#  PATTERN ".svn" EXCLUDE
-#  )
 
 set(changes_file
   "${CPACK_DEBIAN_PACKAGE_NAME}_${Boost_VERSION}-${suffix}_source.changes"

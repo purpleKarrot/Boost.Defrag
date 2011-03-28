@@ -31,7 +31,7 @@ if(BOOST_DEBIAN_PACKAGES)
 
   set(BOOST_MPI_BASE openmpi)
   set(MPI_DEBIAN_DEPENDS DEB_DEPENDS
-    DEV libopenmpi-dev
+    DEV libopenmpi-dev libcr-dev
     LIB libopenmpi1.3
     )
   add_subdirectory(src openmpi)
