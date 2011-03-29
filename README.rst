@@ -9,16 +9,8 @@ Already implemented features:
 * Create a binary installer with selectable components for Windows and Mac OS.
 * Create a source package (with the modules included) that can do everything in this list (except the first entry).
 * Create a Debian source package that can be uploaded to a Launchpad PPA where it is built and packaged into many binary Debian packages.
-* Build Documentation (the usual quickbook-doxygen-boostbook-chain).
 * Tested on Windows (Visual Studio 10), Ubuntu (GCC) and Mac OS X (GCC).
-* Precompiled headers (currently MSVC only). 
-* Build two Boost.MPI libraries on Debian: boost_openmpi and boost_mpich2.
-* Tests actually make use of Boost's autolinking feature.
-
-In the near future:
--------------------------
-* Install and package multiple configurations (Debug AND Release).
-* Install and package the generated documentation.
+* Binary installers contain debug and release build, as well as documentation.
 
 Aggregation:
 ------------------
@@ -28,4 +20,4 @@ Modules can be fetched from a number of different sources:
 * Checkout the module's Subversion repository (requires svn command line client).
 * Clone the module's Git repository (requires git command line client).
 * Download and extract a compressed archive (No additional requirements: .tar.bz2, .tar.gz, .tgz and .zip are supported by CMake).
-* Copy from pristine Boost release (currently all modules use this one).
+* Copy from pristine Boost release (currently nearly all modules use this one).

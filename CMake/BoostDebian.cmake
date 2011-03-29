@@ -153,7 +153,7 @@ file(WRITE ${debian_dir}/source/format "3.0 (native)")
 set(debian_changelog ${debian_dir}/changelog)
 execute_process(COMMAND date -R OUTPUT_VARIABLE DATE_TIME)
 #execute_process(COMMAND date +"%a, %d %b %Y %H:%M:%S %z" OUTPUT_VARIABLE DATE_TIME)
-execute_process(COMMAND date +%y%m%d.2 OUTPUT_VARIABLE suffix OUTPUT_STRIP_TRAILING_WHITESPACE)
+execute_process(COMMAND date +%y%m%d OUTPUT_VARIABLE suffix OUTPUT_STRIP_TRAILING_WHITESPACE)
 file(WRITE ${debian_changelog}
   "${CPACK_DEBIAN_PACKAGE_NAME} (${Boost_VERSION}-${suffix}) natty; urgency=low\n\n"
   "  * Package built with CMake\n\n"

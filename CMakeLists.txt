@@ -81,6 +81,8 @@ if(BOOST_UPDATE_SOURCE OR NOT DEFINED BOOST_UPDATE_SOURCE)
 
   file(COPY
     BoostCPack.cmake
+    create_package
+    create_package.bat
     CTestConfig.cmake
     LICENSE_1_0.txt
     README.txt

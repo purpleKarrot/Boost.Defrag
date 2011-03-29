@@ -1,0 +1,80 @@
+#!/usr/bin/cmake -P
+
+##########################################################################
+# Copyright (C) 2011 Daniel Pfeifer <daniel@pfeifer-mail.de>             #
+#                                                                        #
+# Distributed under the Boost Software License, Version 1.0.             #
+# See accompanying file LICENSE_1_0.txt or copy at                       #
+#   http://www.boost.org/LICENSE_1_0.txt                                 #
+##########################################################################
+
+if(CMAKE_HOST_WIN32)
+  set(GENERATOR -G "NMake Makefiles")
+  set(MAKE_COMMAND nmake)
+else(CMAKE_HOST_WIN32)
+  set(GENERATOR)
+  set(MAKE_COMMAND make)
+endif(CMAKE_HOST_WIN32)
+
+set(debug   "${CMAKE_CURRENT_LIST_DIR}/debug")
+set(release "${CMAKE_CURRENT_LIST_DIR}/release")
+file(MAKE_DIRECTORY "${debug}" "${release}")
+
+execute_process(COMMAND ${CMAKE_COMMAND} -E cmake_echo_color
+  --green "configuring Debug"
+  )
+
+execute_process(COMMAND ${CMAKE_COMMAND} ${GENERATOR}
+  -DCMAKE_BUILD_TYPE=Debug "${CMAKE_CURRENT_LIST_DIR}"
+  WORKING_DIRECTORY "${debug}"
+  )
+
+execute_process(COMMAND ${CMAKE_COMMAND} -E cmake_echo_color
+  --green "configuring Release"
+  )
+
+execute_process(COMMAND ${CMAKE_COMMAND} ${GENERATOR}
+  -DCMAKE_BUILD_TYPE=Release "${CMAKE_CURRENT_LIST_DIR}"
+  WORKING_DIRECTORY "${release}"
+  )
+
+execute_process(COMMAND ${CMAKE_COMMAND} -E cmake_echo_color
+  --green "building Debug"
+  )
+
+execute_process(COMMAND ${MAKE_COMMAND} preinstall
+  WORKING_DIRECTORY "${debug}"
+  )
+
+execute_process(COMMAND ${CMAKE_COMMAND} -E cmake_echo_color
+  --green "building Release"
+  )
+
+execute_process(COMMAND ${MAKE_COMMAND} preinstall
+  WORKING_DIRECTORY "${release}"
+  )
+
+execute_process(COMMAND ${CMAKE_COMMAND} -E cmake_echo_color
+  --green "generating Documentation"
+  )
+
+execute_process(COMMAND ${MAKE_COMMAND} documentation
+  WORKING_DIRECTORY "${release}"
+  )
+
+execute_process(COMMAND ${CMAKE_COMMAND} -E cmake_echo_color
+  --green "making Package"
+  )
+
+set(cpack_config "${CMAKE_CURRENT_LIST_DIR}/CPackConfig.cmake")
+file(WRITE "${cpack_config}"
+  "include(\"${release}/CPackConfig.cmake\")\n"
+  "set(CPACK_INSTALL_CMAKE_PROJECTS\n"
+  "  \"${debug};Boost;ALL;/\"\n"
+  "  \"${release};Boost;ALL;/\"\n"
+  "  )\n"
+  )
+
+execute_process(COMMAND cpack
+  WORKING_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}"
+  )
