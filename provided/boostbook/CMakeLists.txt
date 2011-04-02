@@ -5,7 +5,9 @@ cmake_minimum_required(VERSION 2.8)
 
 find_package(Boost 1.45 NO_MODULE)
 include("${Boost_DEV_FILE}")
+
 include(BoostExtract)
+include(BoostDownload)
 
 boost_project(BoostBook TOOL
   AUTHORS
@@ -35,13 +37,12 @@ find_path(DOCBOOK_DTD_DIR docbookx.dtd PATHS
   "/opt/local/share/xml/docbook/4.2"
   )
 if(NOT DOCBOOK_DTD_DIR)
-  set(url "http://www.oasis-open.org/docbook/xml/4.2/docbook-xml-4.2.zip")
-  set(md5 "73fe50dfe74ca631c1602f558ed8961f")
-  set(archive "${CMAKE_CURRENT_BINARY_DIR}/docbook-dtd.zip")
   set(DOCBOOK_DTD_DIR "${CMAKE_CURRENT_BINARY_DIR}/docbook-dtd")
-
-  file(DOWNLOAD "${url}" "${archive}" SHOW_PROGRESS EXPECTED_MD5 ${md5})
-  boost_extract("${archive}" "${DOCBOOK_DTD_DIR}")
+  boost_download(docbook-dtd.zip
+    http://www.oasis-open.org/docbook/xml/4.2/docbook-xml-4.2.zip
+    73fe50dfe74ca631c1602f558ed8961f
+    )
+  boost_extract(docbook-dtd.zip "${DOCBOOK_DTD_DIR}")
   set(install_docbook_dtd ON)
 endif(NOT DOCBOOK_DTD_DIR)
 
@@ -51,13 +52,12 @@ find_path(DOCBOOK_XSL_DIR html/html.xsl PATHS
   "/opt/local/share/xsl/docbook-xsl"
   )
 if(NOT DOCBOOK_XSL_DIR)
-  set(url "http://sourceforge.net/projects/docbook/files/docbook-xsl/1.75.2/docbook-xsl-1.75.2.tar.bz2/download")
-  set(md5 "0c76a58a8e6cb5ab49f819e79917308f")
-  set(archive "${CMAKE_CURRENT_BINARY_DIR}/docbook-xsl.tgz")
   set(DOCBOOK_XSL_DIR "${CMAKE_CURRENT_BINARY_DIR}/docbook-xsl")
-
-  file(DOWNLOAD "${url}" "${archive}" SHOW_PROGRESS EXPECTED_MD5 ${md5})
-  boost_extract("${archive}" "${DOCBOOK_XSL_DIR}")
+  boost_download(docbook-xsl.tgz
+    http://sourceforge.net/projects/docbook/files/docbook-xsl/1.75.2/docbook-xsl-1.75.2.tar.bz2/download
+    0c76a58a8e6cb5ab49f819e79917308f
+    )
+  boost_extract(docbook-xsl.tgz "${DOCBOOK_XSL_DIR}")
   set(install_docbook_xsl ON)
 endif(NOT DOCBOOK_XSL_DIR)
 

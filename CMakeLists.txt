@@ -13,10 +13,10 @@ project(Boost)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/CMake)
 
-# a dropdown in the CMake GUI would be really cool
 if(NOT BOOST_STAGE MATCHES "^STABLE$|^UNSTABLE$")
   set(BOOST_STAGE "STABLE" CACHE STRING "Possible values are STABLE and UNSTABLE" FORCE)
 endif()
+set_property(CACHE BOOST_STAGE PROPERTY STRINGS STABLE UNSTABLE)
 
 option(BOOST_INCLUDE_INCUBATING "Should incubating components be included?" OFF)
 
@@ -102,5 +102,8 @@ if(BOOST_DEBIAN_PACKAGES)
 endif(BOOST_DEBIAN_PACKAGES)
 
 set(CPACK_SOURCE_INSTALLED_DIRECTORIES "${BOOST_MONOLITHIC_DIR};/")
+
+# This needs to be in the top level directory
+enable_testing()
 
 add_subdirectory("${BOOST_MONOLITHIC_DIR}" "${BOOST_MONOLITHIC_DIR}-build")

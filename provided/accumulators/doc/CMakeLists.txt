@@ -36,8 +36,10 @@ file(GLOB accdoc_headers
   )
 
 boost_add_reference(accdoc ${accdoc_headers}
-  DOXYFILE acc.doxyfile
-  TITLE "Accumulators Framework Reference"
+  DOXYFILE
+    acc.doxyfile
+  XSLTPROC_PARAMETERS
+    boost.doxygen.reftitle="Accumulators Framework Reference"
   )
 
 file(GLOB statsdoc_headers
@@ -60,12 +62,15 @@ file(WRITE ${copy_forms_cmake}
   )
 
 boost_add_reference(statsdoc ${statsdoc_headers}
-  DOXYFILE acc.doxyfile
-  TAGFILES ${accumulators_tag}
-  TITLE    "Statistics Library Reference"
+  DOXYFILE
+    acc.doxyfile
+  TAGFILES
+    "${accumulators_tag}"
   DOXYGEN_PARAMETERS
     "GENERATE_HTML = YES"
     "HTML_OUTPUT=${statsdoc_html_dir}"
+  XSLTPROC_PARAMETERS
+    boost.doxygen.reftitle="Statistics Library Reference"
   )
 
 add_custom_command(OUTPUT formulas.copied
@@ -83,8 +88,10 @@ file(GLOB opdoc_headers
   )
 
 boost_add_reference(opdoc ${opdoc_headers}
-  DOXYFILE op.doxyfile
-  TITLE "Numeric Operators Library Reference"
+  DOXYFILE
+    op.doxyfile
+  XSLTPROC_PARAMETERS
+    boost.doxygen.reftitle="Numeric Operators Library Reference"
   )
 
 boost_documentation(accumulators.qbk

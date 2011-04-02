@@ -33,30 +33,35 @@ file(GLOB local_time_files boost/date_time/local_time/*.hpp)
 list(REMOVE_ITEM gregorian_files boost/date_time/gregorian/event_schedule.hpp)
 
 boost_add_reference(date_time_autodoc ${date_time_files}
-  DOXYGEN_PARAMETERS "ENABLE_PREPROCESSING = NO"
-  TITLE "Date Time Reference"
-  ID "date_time_reference"
-  #<xsl:param>boost.doxygen.reftitle="Date Time Reference"
-  #<doxygen.doxproc.title>"Date Time Reference"
-  #<doxygen.doxproc.id>"date_time_reference"
+  DOXYGEN_PARAMETERS
+    "ENABLE_PREPROCESSING = NO"
+  XSLTPROC_PARAMETERS
+    boost.doxygen.refid=date_time_reference
+    boost.doxygen.reftitle="Date Time Reference"
   )
 
 boost_add_reference(gregorian_autodoc ${gregorian_files}
-  DOXYGEN_PARAMETERS "ENABLE_PREPROCESSING = NO"
-  TITLE "Gregorian Reference"
-  ID "gregorian_reference"
+  DOXYGEN_PARAMETERS
+    "ENABLE_PREPROCESSING = NO"
+  XSLTPROC_PARAMETERS
+    boost.doxygen.refid=gregorian_reference
+    boost.doxygen.reftitle="Gregorian Reference"
   )
 
 boost_add_reference(posix_time_autodoc ${posix_time_files}
-  DOXYGEN_PARAMETERS "ENABLE_PREPROCESSING = NO"
-  TITLE "Posix Time Reference"
-  ID "posix_time_reference"
+  DOXYGEN_PARAMETERS
+    "ENABLE_PREPROCESSING = NO"
+  XSLTPROC_PARAMETERS
+    boost.doxygen.refid=posix_time_reference
+    boost.doxygen.reftitle="Posix Time Reference"
   )
 
 boost_add_reference(local_time_autodoc ${local_time_files}
-  DOXYGEN_PARAMETERS "ENABLE_PREPROCESSING = NO"
-  TITLE "Local Time Reference"
-  ID "local_time_reference"
+  DOXYGEN_PARAMETERS
+    "ENABLE_PREPROCESSING = NO"
+  XSLTPROC_PARAMETERS
+    boost.doxygen.refid=local_time_reference
+    boost.doxygen.reftitle="Local Time Reference"
   )
 
 file(GLOB date_time_xmldoc xmldoc/*.xml)
