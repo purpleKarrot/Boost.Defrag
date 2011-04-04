@@ -8,8 +8,8 @@
 
 boost_module(cmake
   STABLE GIT
-    URL git://github.com/purpleKarrot/Boost.CMake.git
-    TAG ff88a02928153ac7cd20
+    URL git://github.com/ryppl/Boost.CMake.git
+    TAG 12d4b61bbcc5dc1ada30
   UNSTABLE GIT
     URL git://github.com/purpleKarrot/Boost.CMake.git
     TAG master

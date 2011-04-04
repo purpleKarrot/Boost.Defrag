@@ -103,7 +103,4 @@ endif(BOOST_DEBIAN_PACKAGES)
 
 set(CPACK_SOURCE_INSTALLED_DIRECTORIES "${BOOST_MONOLITHIC_DIR};/")
 
-# This needs to be in the top level directory
-enable_testing()
-
 add_subdirectory("${BOOST_MONOLITHIC_DIR}" "${BOOST_MONOLITHIC_DIR}-build")

@@ -5,7 +5,10 @@
 
 if(NOT BOOST_MPI_BASE)
   set(boost_mpi_name "mpi")
-  find_package(MPI REQUIRED)
+  find_package(MPI)
+  if(NOT MPI_FOUND)
+    return()
+  endif(NOT MPI_FOUND)
 else()
   boost_project(${BOOST_MPI_BASE} DEPENDS mpi ${MPI_DEBIAN_DEPENDS})
   set(boost_mpi_name "${BOOST_MPI_BASE}")

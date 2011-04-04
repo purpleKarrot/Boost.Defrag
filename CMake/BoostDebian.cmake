@@ -101,38 +101,54 @@ file(WRITE ${debian_rules}
   "	cmake -E make_directory $(RELEASE)\n"
   "	cd $(DEBUG); cmake -DCMAKE_BUILD_TYPE=Debug -DBOOST_DEBIAN_PACKAGES=TRUE ..\n"
   "	cd $(RELEASE); cmake -DCMAKE_BUILD_TYPE=Release -DBOOST_DEBIAN_PACKAGES=TRUE ..\n"
-  "	make --no-print-directory -C $(DEBUG) preinstall\n"
-  "	make --no-print-directory -C $(RELEASE) preinstall\n"
-  "	make --no-print-directory -C $(RELEASE) documentation\n"
+  "	$(MAKE) --no-print-directory -C $(DEBUG) preinstall\n"
+  "	$(MAKE) --no-print-directory -C $(RELEASE) preinstall\n"
   "	touch build\n"
   "\n"
   "binary: binary-indep binary-arch\n"
   "\n"
   "binary-indep: build\n"
-  "\n"
-  "binary-arch: build\n"
-# "	cd $(RELEASE); cmake -DCOMPONENT=Unspecified -DCMAKE_INSTALL_PREFIX=../debian/tmp/usr -P cmake_install.cmake\n"
-# "	cmake -E make_directory debian/tmp/DEBIAN\n"
-# "	dpkg-gencontrol -p${CPACK_DEBIAN_PACKAGE_NAME}\n"
-# "	dpkg --build debian/tmp ..\n"
+  "	$(MAKE) --no-print-directory -C $(RELEASE) documentation\n"
   )
 
 foreach(component ${CPACK_COMPONENTS_ALL})
   string(TOUPPER "${component}" COMPONENT)
-  set(path debian/${component})
-  file(APPEND ${debian_rules}
-    "	cd $(DEBUG); cmake -DCOMPONENT=${component} -DCMAKE_INSTALL_PREFIX=../${path}/usr -P cmake_install.cmake\n"
-    "	cd $(RELEASE); cmake -DCOMPONENT=${component} -DCMAKE_INSTALL_PREFIX=../${path}/usr -P cmake_install.cmake\n"
-    "	cmake -E make_directory ${path}/DEBIAN\n"
-    "	dpkg-gencontrol -p${CPACK_COMPONENT_${COMPONENT}_DEB_PACKAGE} -P${path}\n"
-    "	dpkg --build ${path} ..\n"
-    )
+  if(CPACK_COMPONENT_${COMPONENT}_BINARY_INDEP)
+    set(path debian/${component})
+    file(APPEND ${debian_rules}
+      "	cd $(DEBUG); cmake -DCOMPONENT=${component} -DCMAKE_INSTALL_PREFIX=../${path}/usr -P cmake_install.cmake\n"
+      "	cd $(RELEASE); cmake -DCOMPONENT=${component} -DCMAKE_INSTALL_PREFIX=../${path}/usr -P cmake_install.cmake\n"
+      "	cmake -E make_directory ${path}/DEBIAN\n"
+      "	dpkg-gencontrol -p${CPACK_COMPONENT_${COMPONENT}_DEB_PACKAGE} -P${path}\n"
+      "	dpkg --build ${path} ..\n"
+      )
+  endif(CPACK_COMPONENT_${COMPONENT}_BINARY_INDEP)
+endforeach(component)
+
+file(APPEND ${debian_rules}
+  "\n"
+  "binary-arch: build\n"
+  )
+
+foreach(component ${CPACK_COMPONENTS_ALL})
+  string(TOUPPER "${component}" COMPONENT)
+  if(NOT CPACK_COMPONENT_${COMPONENT}_BINARY_INDEP)
+    set(path debian/${component})
+    file(APPEND ${debian_rules}
+      "	cd $(DEBUG); cmake -DCOMPONENT=${component} -DCMAKE_INSTALL_PREFIX=../${path}/usr -P cmake_install.cmake\n"
+      "	cd $(RELEASE); cmake -DCOMPONENT=${component} -DCMAKE_INSTALL_PREFIX=../${path}/usr -P cmake_install.cmake\n"
+      "	cmake -E make_directory ${path}/DEBIAN\n"
+      "	dpkg-gencontrol -p${CPACK_COMPONENT_${COMPONENT}_DEB_PACKAGE} -P${path}\n"
+      "	dpkg --build ${path} ..\n"
+      )
+  endif(NOT CPACK_COMPONENT_${COMPONENT}_BINARY_INDEP)
 endforeach(component)
 
 file(APPEND ${debian_rules}
   "\n"
   "clean:\n"
   "	rm -f build\n"
+  "	rm -rf $(DEBUG)\n"
   "	rm -rf $(RELEASE)\n"
   "\n"
   ".PHONY: binary binary-arch binary-indep clean\n"

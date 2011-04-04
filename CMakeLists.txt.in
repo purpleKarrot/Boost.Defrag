@@ -27,11 +27,10 @@ file(WRITE "${PROJECT_BINARY_DIR}/BoostConfig.cmake"
   "set(Boost_INCLUDE_DIRS \"${CMAKE_BINARY_DIR}/include\")\n"
   "set(Boost_LIBRARY_DIRS \"${CMAKE_BINARY_DIR}/lib\")\n"
   "set(Boost_RESOURCE_PATH \"${PROJECT_SOURCE_DIR}/src/cmake/resources\")\n"
-  "set(Boost_MODULE_PATH \"${PROJECT_SOURCE_DIR}/src/cmake/modules\")\n"
   "set(BOOSTBOOK_CATALOG \"${PROJECT_BINARY_DIR}/src/boostbook/catalog.xml\")\n"
   "set(BOOSTBOOK_XSL_DIR \"${PROJECT_SOURCE_DIR}/src/boostbook/xsl\")\n"
-  "set(Boost_USE_FILE \"\${Boost_MODULE_PATH}/UseBoost.cmake\")\n"
-  "set(Boost_DEV_FILE \"\${Boost_MODULE_PATH}/UseBoostDev.cmake\")\n"
+  "set(Boost_USE_FILE \"${PROJECT_SOURCE_DIR}/src/cmake/modules/UseBoost.cmake\")\n"
+  "set(Boost_DEV_FILE \"${PROJECT_SOURCE_DIR}/src/cmake/modules/UseBoostDev.cmake\")\n"
   )
 
 set(Boost_DIR ${PROJECT_BINARY_DIR} CACHE PATH "")
@@ -42,7 +41,11 @@ include("${Boost_DEV_FILE}")
 # Building and Testing                                                   #
 ##########################################################################
 
-enable_testing()
+# As long as CTest does not support incremental testing, we disable the
+# builtin test target and create our own. This target should be "built"
+# with the "keep going" option, eg: 'make test -k'.
+add_custom_target(test)
+#enable_testing()
 
 # make visual studio look nice
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
@@ -63,8 +66,8 @@ set(BOOST_PROJECTS_ALL)
 
 ##########################################################################
 
-list(REMOVE_DUPLICATES BOOST_PROJECTS_ALL)
 list(SORT BOOST_PROJECTS_ALL)
+list(REMOVE_DUPLICATES BOOST_PROJECTS_ALL)
 
 # function to set CPACK_COMPONENT_*
 function(set_cpack_component name)
@@ -121,6 +124,7 @@ foreach(project ${BOOST_PROJECTS_ALL})
 
   set_cpack_component(${project}_DEVELOP_DEBIAN_DEPENDS ${DEB_DEV})
   set_cpack_component(${project}_RUNTIME_DEBIAN_DEPENDS ${DEB_LIB} ${DEB_UNPARSED_ARGUMENTS})
+  set_cpack_component(${project}_MANUAL_BINARY_INDEP 1)
 
   # dependencies
   set(develop_depends)
