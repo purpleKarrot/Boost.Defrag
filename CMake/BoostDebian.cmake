@@ -45,12 +45,6 @@ file(WRITE ${debian_control}
   "Build-Depends: ${build_depends}\n"
   "Standards-Version: 3.9.1\n"
   "Homepage: ${CPACK_PACKAGE_VENDOR}\n"
-# "\n"
-# "Package: ${CPACK_DEBIAN_PACKAGE_NAME}\n"
-# "Architecture: any\n"
-# "Depends: ${CPACK_DEBIAN_PACKAGE_DEPENDS}\n"
-# "Description: ${CPACK_PACKAGE_DESCRIPTION_SUMMARY}\n"
-# "${DEB_LONG_DESCRIPTION}"
   )
 
 foreach(component ${CPACK_COMPONENTS_ALL})
@@ -65,10 +59,16 @@ foreach(component ${CPACK_COMPONENTS_ALL})
   endforeach(dep)
   string(REPLACE ";" ", " deb_depends "${deb_depends}")
 
+  if(CPACK_COMPONENT_${COMPONENT}_BINARY_INDEP)
+    set(architecture all)
+  else(CPACK_COMPONENT_${COMPONENT}_BINARY_INDEP)
+    set(architecture any)
+  endif(CPACK_COMPONENT_${COMPONENT}_BINARY_INDEP)
+
   file(APPEND ${debian_control}
     "\n"
     "Package: ${CPACK_COMPONENT_${COMPONENT}_DEB_PACKAGE}\n"
-    "Architecture: any\n"
+    "Architecture: ${architecture}\n"
     "Depends: ${deb_depends}\n"
     "Description: Boost.${display_name}\n"
     "${DEB_LONG_DESCRIPTION}"
@@ -96,38 +96,30 @@ file(WRITE ${debian_rules}
   "FFLAGS =\n"
   "LDFLAGS =\n"
   "\n"
-  "build:\n"
+  "configure-debug:\n"
   "	cmake -E make_directory $(DEBUG)\n"
-  "	cmake -E make_directory $(RELEASE)\n"
   "	cd $(DEBUG); cmake -DCMAKE_BUILD_TYPE=Debug -DBOOST_DEBIAN_PACKAGES=TRUE ..\n"
+  "	touch configure-debug\n"
+  "\n"
+  "configure-release:\n"
+  "	cmake -E make_directory $(RELEASE)\n"
   "	cd $(RELEASE); cmake -DCMAKE_BUILD_TYPE=Release -DBOOST_DEBIAN_PACKAGES=TRUE ..\n"
+  "	touch configure-release\n"
+  "\n"
+  "build: build-arch\n" # build-indep
+  "\n"
+  "build-arch: configure-debug configure-release\n"
   "	$(MAKE) --no-print-directory -C $(DEBUG) preinstall\n"
   "	$(MAKE) --no-print-directory -C $(RELEASE) preinstall\n"
-  "	touch build\n"
+  "	touch build-arch\n"
   "\n"
-  "binary: binary-indep binary-arch\n"
-  "\n"
-  "binary-indep: build\n"
+  "build-indep: configure-release\n"
   "	$(MAKE) --no-print-directory -C $(RELEASE) documentation\n"
-  )
-
-foreach(component ${CPACK_COMPONENTS_ALL})
-  string(TOUPPER "${component}" COMPONENT)
-  if(CPACK_COMPONENT_${COMPONENT}_BINARY_INDEP)
-    set(path debian/${component})
-    file(APPEND ${debian_rules}
-      "	cd $(DEBUG); cmake -DCOMPONENT=${component} -DCMAKE_INSTALL_PREFIX=../${path}/usr -P cmake_install.cmake\n"
-      "	cd $(RELEASE); cmake -DCOMPONENT=${component} -DCMAKE_INSTALL_PREFIX=../${path}/usr -P cmake_install.cmake\n"
-      "	cmake -E make_directory ${path}/DEBIAN\n"
-      "	dpkg-gencontrol -p${CPACK_COMPONENT_${COMPONENT}_DEB_PACKAGE} -P${path}\n"
-      "	dpkg --build ${path} ..\n"
-      )
-  endif(CPACK_COMPONENT_${COMPONENT}_BINARY_INDEP)
-endforeach(component)
-
-file(APPEND ${debian_rules}
+  "	touch build-indep\n"
   "\n"
-  "binary-arch: build\n"
+  "binary: binary-arch binary-indep\n"
+  "\n"
+  "binary-arch: build-arch\n"
   )
 
 foreach(component ${CPACK_COMPONENTS_ALL})
@@ -146,10 +138,29 @@ endforeach(component)
 
 file(APPEND ${debian_rules}
   "\n"
+  "binary-indep: build-indep\n"
+  )
+
+foreach(component ${CPACK_COMPONENTS_ALL})
+  string(TOUPPER "${component}" COMPONENT)
+  if(CPACK_COMPONENT_${COMPONENT}_BINARY_INDEP)
+    set(path debian/${component})
+    file(APPEND ${debian_rules}
+      "	cd $(DEBUG); cmake -DCOMPONENT=${component} -DCMAKE_INSTALL_PREFIX=../${path}/usr -P cmake_install.cmake\n"
+      "	cd $(RELEASE); cmake -DCOMPONENT=${component} -DCMAKE_INSTALL_PREFIX=../${path}/usr -P cmake_install.cmake\n"
+      "	cmake -E make_directory ${path}/DEBIAN\n"
+      "	dpkg-gencontrol -p${CPACK_COMPONENT_${COMPONENT}_DEB_PACKAGE} -P${path}\n"
+      "	dpkg --build ${path} ..\n"
+      )
+  endif(CPACK_COMPONENT_${COMPONENT}_BINARY_INDEP)
+endforeach(component)
+
+file(APPEND ${debian_rules}
+  "\n"
   "clean:\n"
-  "	rm -f build\n"
-  "	rm -rf $(DEBUG)\n"
-  "	rm -rf $(RELEASE)\n"
+  "	cmake -E remove_directory $(DEBUG)\n"
+  "	cmake -E remove_directory $(RELEASE)\n"
+  "	cmake -E remove configure-debug configure-release build-arch build-indep\n"
   "\n"
   ".PHONY: binary binary-arch binary-indep clean\n"
   )

@@ -124,6 +124,10 @@ foreach(project ${BOOST_PROJECTS_ALL})
 
   set_cpack_component(${project}_DEVELOP_DEBIAN_DEPENDS ${DEB_DEV})
   set_cpack_component(${project}_RUNTIME_DEBIAN_DEPENDS ${DEB_LIB} ${DEB_UNPARSED_ARGUMENTS})
+
+  if(header_only)
+    set_cpack_component(${project}_DEVELOP_BINARY_INDEP 1)
+  endif(header_only)
   set_cpack_component(${project}_MANUAL_BINARY_INDEP 1)
 
   # dependencies
