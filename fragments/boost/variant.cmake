@@ -5,4 +5,6 @@ boost_module(variant
   COPY_FROM_PRISTINE_BOOST
     boost/variant
     boost/variant.hpp
+    boost/blank.hpp
+    boost/blank_fwd.hpp
   )

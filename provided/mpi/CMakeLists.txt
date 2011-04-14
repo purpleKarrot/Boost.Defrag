@@ -25,7 +25,7 @@ if(BOOST_DEBIAN_PACKAGES)
   set(BOOST_MPI_BASE mpich2)
   set(MPI_DEBIAN_DEPENDS DEB_DEPENDS
     DEV libmpich2-dev
-    LIB libmpich2-1.2
+    LIB libmpich2-2
     )
   add_subdirectory(src mpich2)
 
