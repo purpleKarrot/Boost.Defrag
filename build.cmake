@@ -33,13 +33,13 @@ endif(EXISTS "${BUILDDIR}/toolchain.cmake")
 
 if(CMAKE_HOST_WIN32)
   if(TOOLSET_NAME STREQUAL "vs10")
-	set(VSVARS_BAT "%VS100COMNTOOLS%vsvars32.bat")
+    set(VSVARS_BAT "%VS100COMNTOOLS%vsvars32.bat")
   elseif(TOOLSET_NAME STREQUAL "vs9")
-	set(VSVARS_BAT "%VS90COMNTOOLS%vsvars32.bat")
+    set(VSVARS_BAT "%VS90COMNTOOLS%vsvars32.bat")
   elseif(TOOLSET_NAME STREQUAL "vs8")
-	set(VSVARS_BAT "%VS80COMNTOOLS%vsvars32.bat")
+    set(VSVARS_BAT "%VS80COMNTOOLS%vsvars32.bat")
   elseif(TOOLSET_NAME STREQUAL "vs71")
-	set(VSVARS_BAT "%VS71COMNTOOLS%vsvars32.bat")
+    set(VSVARS_BAT "%VS71COMNTOOLS%vsvars32.bat")
   endif()
   if(DEFINED VSVARS_BAT)
     file(WRITE "${BUILDDIR}/vsvars.bat"
@@ -67,10 +67,8 @@ endif(NOT DEFINED GENERATOR)
 
 
 if(CMAKE_HOST_WIN32)
-  set(GENERATOR -G "NMake Makefiles")
   set(MAKE_COMMAND nmake)
 else(CMAKE_HOST_WIN32)
-  set(GENERATOR)
   set(MAKE_COMMAND make)
 endif(CMAKE_HOST_WIN32)
 
@@ -88,15 +86,15 @@ endif(NOT DEFINED BUILDSTEP OR BUILDSTEP STREQUAL "aggregate")
 
 
 if(NOT DEFINED BUILDSTEP OR BUILDSTEP STREQUAL "configure")
-  execute_process(COMMAND ${CMAKE_COMMAND} ${GENERATOR}
+  execute_process(COMMAND "${CMAKE_COMMAND}" "-G${GENERATOR}"
     -DBOOST_UPDATE_SOURCE=1 # TODO: move to aggregate step
-	"${TOOLCHAIN_PARAM}" -DCMAKE_BUILD_TYPE=Debug 
-	"${CMAKE_CURRENT_LIST_DIR}"
+    "${TOOLCHAIN_PARAM}" -DCMAKE_BUILD_TYPE=Debug 
+    "${CMAKE_CURRENT_LIST_DIR}"
     WORKING_DIRECTORY "${debug_dir}"
     )
-  execute_process(COMMAND ${CMAKE_COMMAND} ${GENERATOR}
-	"${TOOLCHAIN_PARAM}" -DCMAKE_BUILD_TYPE=Release
-	"${debug_dir}/monolithic"
+  execute_process(COMMAND "${CMAKE_COMMAND}" "-G${GENERATOR}"
+    "${TOOLCHAIN_PARAM}" -DCMAKE_BUILD_TYPE=Release
+    "${debug_dir}/monolithic"
     WORKING_DIRECTORY "${release_dir}"
     )
 endif(NOT DEFINED BUILDSTEP OR BUILDSTEP STREQUAL "configure")
