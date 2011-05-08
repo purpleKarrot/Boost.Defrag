@@ -8,37 +8,50 @@
 #   http://www.boost.org/LICENSE_1_0.txt                                 #
 ##########################################################################
 
-# cmake -DBUILDDIR=/path -DBUILDSTEP=configure -P build.cmake
+# cmake -DBUILDDIR=/path -DTOOLCHAIN=vs9 -DBUILDSTEP=configure -P build.cmake
+
+
+set(MAKE_COMMAND make)
+set(GENERATOR "Unix Makefiles")
+
 
 if(NOT DEFINED BUILDDIR)
   set(BUILDDIR "${CMAKE_CURRENT_LIST_DIR}/build")
-endif(NOT DEFINED BUILDDIR)
+elseif(NOT IS_ABSOLUTE "${BUILDDIR}")
+  set(BUILDDIR "${CMAKE_CURRENT_LIST_DIR}/${BUILDDIR}")
+endif()
 
-set(TOOLSET_NAME default)
-if(EXISTS "${BUILDDIR}/toolchain.cmake")
-  include("${BUILDDIR}/toolchain.cmake")
-  set(TOOLCHAIN_PARAM "-DCMAKE_TOOLCHAIN_FILE=${BUILDDIR}/toolchain.cmake")
-elseif(CMAKE_HOST_WIN32)
+
+if(CMAKE_HOST_WIN32 AND NOT DEFINED TOOLCHAIN)
   if(EXISTS "$ENV{VS100COMNTOOLS}vsvars32.bat")
-    set(TOOLSET_NAME vs10)
+    set(TOOLCHAIN vs10)
   elseif(EXISTS "$ENV{VS90COMNTOOLS}vsvars32.bat")
-    set(TOOLSET_NAME vs9)
+    set(TOOLCHAIN vs9)
   elseif(EXISTS "$ENV{VS80COMNTOOLS}vsvars32.bat")
-    set(TOOLSET_NAME vs8)
+    set(TOOLCHAIN vs8)
   elseif(EXISTS "$ENV{VS71COMNTOOLS}vsvars32.bat")
-    set(TOOLSET_NAME vs71)
+    set(TOOLCHAIN vs71)
   endif()
-endif(EXISTS "${BUILDDIR}/toolchain.cmake")
+endif(CMAKE_HOST_WIN32 AND NOT DEFINED TOOLCHAIN)
+
+
+if(DEFINED TOOLCHAIN)
+  set(toolchain_file "${CMAKE_CURRENT_LIST_DIR}/toolchains/${TOOLCHAIN}.cmake")
+  if(EXISTS "${toolchain_file}")
+    include("${toolchain_file}")
+    set(toolchain_param "-DCMAKE_TOOLCHAIN_FILE=${toolchain_file}")
+  endif(EXISTS "${toolchain_file}")
+endif(DEFINED TOOLCHAIN)
 
 
 if(CMAKE_HOST_WIN32)
-  if(TOOLSET_NAME STREQUAL "vs10")
+  if(TOOLCHAIN STREQUAL "vs10")
     set(VSVARS_BAT "%VS100COMNTOOLS%vsvars32.bat")
-  elseif(TOOLSET_NAME STREQUAL "vs9")
+  elseif(TOOLCHAIN STREQUAL "vs9")
     set(VSVARS_BAT "%VS90COMNTOOLS%vsvars32.bat")
-  elseif(TOOLSET_NAME STREQUAL "vs8")
+  elseif(TOOLCHAIN STREQUAL "vs8")
     set(VSVARS_BAT "%VS80COMNTOOLS%vsvars32.bat")
-  elseif(TOOLSET_NAME STREQUAL "vs71")
+  elseif(TOOLCHAIN STREQUAL "vs71")
     set(VSVARS_BAT "%VS71COMNTOOLS%vsvars32.bat")
   endif()
   if(DEFINED VSVARS_BAT)
@@ -53,23 +66,9 @@ if(CMAKE_HOST_WIN32)
       WORKING_DIRECTORY "${BUILDDIR}"
       )
     include("${BUILDDIR}/vsvars.cmake")
-  endif(DEFINED VSVARS_BAT)
-endif(CMAKE_HOST_WIN32)
-
-
-if(NOT DEFINED GENERATOR)
-  if(CMAKE_HOST_WIN32)
     set(GENERATOR "NMake Makefiles")
-  else(CMAKE_HOST_WIN32)
-    set(GENERATOR "Unix Makefiles")
-  endif(CMAKE_HOST_WIN32)
-endif(NOT DEFINED GENERATOR)
-
-
-if(CMAKE_HOST_WIN32)
-  set(MAKE_COMMAND nmake)
-else(CMAKE_HOST_WIN32)
-  set(MAKE_COMMAND make)
+    set(MAKE_COMMAND nmake)
+  endif(DEFINED VSVARS_BAT)
 endif(CMAKE_HOST_WIN32)
 
 
@@ -88,12 +87,12 @@ endif(NOT DEFINED BUILDSTEP OR BUILDSTEP STREQUAL "aggregate")
 if(NOT DEFINED BUILDSTEP OR BUILDSTEP STREQUAL "configure")
   execute_process(COMMAND "${CMAKE_COMMAND}" "-G${GENERATOR}"
     -DBOOST_UPDATE_SOURCE=1 # TODO: move to aggregate step
-    "${TOOLCHAIN_PARAM}" -DCMAKE_BUILD_TYPE=Debug 
+    "${toolchain_param}" -DCMAKE_BUILD_TYPE=Debug 
     "${CMAKE_CURRENT_LIST_DIR}"
     WORKING_DIRECTORY "${debug_dir}"
     )
   execute_process(COMMAND "${CMAKE_COMMAND}" "-G${GENERATOR}"
-    "${TOOLCHAIN_PARAM}" -DCMAKE_BUILD_TYPE=Release
+    "${toolchain_param}" -DCMAKE_BUILD_TYPE=Release
     "${debug_dir}/monolithic"
     WORKING_DIRECTORY "${release_dir}"
     )
@@ -128,7 +127,7 @@ endif(NOT DEFINED BUILDSTEP OR BUILDSTEP STREQUAL "documentation")
 
 
 if(NOT DEFINED BUILDSTEP OR BUILDSTEP STREQUAL "package")
-  file(WRITE "${BUILDDIR}/CPackConfig.cmake"
+  file(WRITE "${package_dir}/CPackConfig.cmake"
     "include(\"${release_dir}/CPackConfig.cmake\")\n"
     "set(CPACK_INSTALL_CMAKE_PROJECTS\n"
     "  \"${debug_dir};Boost;ALL;/\"\n"
@@ -136,7 +135,7 @@ if(NOT DEFINED BUILDSTEP OR BUILDSTEP STREQUAL "package")
     "  )\n"
     )
   execute_process(COMMAND cpack
-    WORKING_DIRECTORY "${BUILDDIR}"
+    WORKING_DIRECTORY "${package_dir}"
     )
 endif(NOT DEFINED BUILDSTEP OR BUILDSTEP STREQUAL "package")
 
