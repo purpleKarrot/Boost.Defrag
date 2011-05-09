@@ -8,7 +8,7 @@
 #   http://www.boost.org/LICENSE_1_0.txt                                 #
 ##########################################################################
 
-# cmake -DBUILDDIR=/path -DTOOLCHAIN=vs9 -DBUILDSTEP=configure -P build.cmake
+# cmake -DBUILDDIR=../build -DTOOLCHAIN=vs9 -DBUILDSTEP=configure -P build.cmake
 
 
 set(MAKE_COMMAND make)
@@ -64,6 +64,7 @@ if(CMAKE_HOST_WIN32)
       )
     execute_process(COMMAND "${BUILDDIR}/vsvars.bat"
       WORKING_DIRECTORY "${BUILDDIR}"
+      OUTPUT_QUIET
       )
     include("${BUILDDIR}/vsvars.cmake")
     set(GENERATOR "NMake Makefiles")
@@ -90,39 +91,58 @@ if(NOT DEFINED BUILDSTEP OR BUILDSTEP STREQUAL "configure")
     "${toolchain_param}" -DCMAKE_BUILD_TYPE=Debug 
     "${CMAKE_CURRENT_LIST_DIR}"
     WORKING_DIRECTORY "${debug_dir}"
+    RESULT_VARIABLE debug_result
     )
   execute_process(COMMAND "${CMAKE_COMMAND}" "-G${GENERATOR}"
     "${toolchain_param}" -DCMAKE_BUILD_TYPE=Release
     "${debug_dir}/monolithic"
     WORKING_DIRECTORY "${release_dir}"
+    RESULT_VARIABLE release_result
     )
+  if(NOT debug_result EQUAL 0 OR NOT release_result EQUAL 0)
+    message(FATAL_ERROR "Configuring failed.")
+  endif(NOT debug_result EQUAL 0 OR NOT release_result EQUAL 0)
 endif(NOT DEFINED BUILDSTEP OR BUILDSTEP STREQUAL "configure")
 
 
 if(NOT DEFINED BUILDSTEP OR BUILDSTEP STREQUAL "build")
   execute_process(COMMAND ${MAKE_COMMAND}
     WORKING_DIRECTORY "${debug_dir}"
+    RESULT_VARIABLE debug_result
     )
   execute_process(COMMAND ${MAKE_COMMAND}
     WORKING_DIRECTORY "${release_dir}"
+    RESULT_VARIABLE release_result
     )
+  if(NOT debug_result EQUAL 0 OR NOT release_result EQUAL 0)
+    message(FATAL_ERROR "Building failed.")
+  endif(NOT debug_result EQUAL 0 OR NOT release_result EQUAL 0)
 endif(NOT DEFINED BUILDSTEP OR BUILDSTEP STREQUAL "build")
 
 
 if(NOT DEFINED BUILDSTEP OR BUILDSTEP STREQUAL "test")
   execute_process(COMMAND ${MAKE_COMMAND} test
     WORKING_DIRECTORY "${debug_dir}"
+    RESULT_VARIABLE debug_result
     )
   execute_process(COMMAND ${MAKE_COMMAND} test
     WORKING_DIRECTORY "${release_dir}"
+    RESULT_VARIABLE release_result
     )
+  if(NOT debug_result EQUAL 0 OR NOT release_result EQUAL 0)
+    message(FATAL_ERROR "Testing failed.")
+  endif(NOT debug_result EQUAL 0 OR NOT release_result EQUAL 0)
 endif(NOT DEFINED BUILDSTEP OR BUILDSTEP STREQUAL "test")
 
 
 if(NOT DEFINED BUILDSTEP OR BUILDSTEP STREQUAL "documentation")
   execute_process(COMMAND ${MAKE_COMMAND} documentation
     WORKING_DIRECTORY "${release_dir}"
+    RESULT_VARIABLE result
     )
+  if(NOT result EQUAL 0)
+    message(FATAL_ERROR "Generating of documentation failed.")
+  endif(NOT result EQUAL 0)
 endif(NOT DEFINED BUILDSTEP OR BUILDSTEP STREQUAL "documentation")
 
 
@@ -136,6 +156,10 @@ if(NOT DEFINED BUILDSTEP OR BUILDSTEP STREQUAL "package")
     )
   execute_process(COMMAND cpack
     WORKING_DIRECTORY "${package_dir}"
+    RESULT_VARIABLE result
     )
+  if(NOT result EQUAL 0)
+    message(FATAL_ERROR "Packaging failed.")
+  endif(NOT result EQUAL 0)
 endif(NOT DEFINED BUILDSTEP OR BUILDSTEP STREQUAL "package")
 
