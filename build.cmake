@@ -11,7 +11,7 @@
 # cmake -DBUILDDIR=../build -DTOOLCHAIN=vs9 -DBUILDSTEP=configure -P build.cmake
 
 
-set(MAKE_COMMAND make)
+set(MAKE_COMMAND make -k)
 set(GENERATOR "Unix Makefiles")
 
 
@@ -51,7 +51,7 @@ if(CMAKE_HOST_WIN32)
     set(VSVARS_BAT "%VS90COMNTOOLS%vsvars32.bat")
   elseif(TOOLCHAIN STREQUAL "vs8")
     set(VSVARS_BAT "%VS80COMNTOOLS%vsvars32.bat")
-  elseif(TOOLCHAIN STREQUAL "vs71")
+  elseif(TOOLCHAIN STREQUAL "vs71" OR TOOLCHAIN STREQUAL "vs7.1")
     set(VSVARS_BAT "%VS71COMNTOOLS%vsvars32.bat")
   endif()
   if(DEFINED VSVARS_BAT)
@@ -68,7 +68,7 @@ if(CMAKE_HOST_WIN32)
       )
     include("${BUILDDIR}/vsvars.cmake")
     set(GENERATOR "NMake Makefiles")
-    set(MAKE_COMMAND nmake)
+    set(MAKE_COMMAND nmake /NOLOGO /K)
   endif(DEFINED VSVARS_BAT)
 endif(CMAKE_HOST_WIN32)
 
